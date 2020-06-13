@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-#This is an experimental file for the purpose of testing image conversion from cv2 to numpy. 
+#This is an experimental file for the purpose of testing image conversion from cv2 to numpy.
 #The images saved in the img folder are for demonstration.
 
 #Importing the dependencies
 import rospy
 import cv2
+import os
 import numpy as np
 
 from sensor_msgs.msg import Image
@@ -12,7 +13,7 @@ from cv_bridge import CvBridge, CvBridgeError
 #Commented out because we do not need tensorflow or keras right now, but these will be implemented in the neural network
 #import tensorflow as tf
 #from keras.preprocessing import image
-
+path = "/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/camCap/Node/img/"
 bridge = CvBridge()
 
 def callback(msg):
@@ -25,9 +26,9 @@ def callback(msg):
     else:
         np_img = np.asarray(cv2_gray) #convert to a numpy array
         time = msg.header.stamp #capture the time on the image
-        cv2.imwrite(""+str(time)+".jpeg",np_img)  #save the image. 
+        cv2.imwrite(os.path.join(path,""+str(time)+".jpeg"),np_img)  #save the image. 
 	print("Printed")
-        
+
 
 def main():
     #Start ROS node
