@@ -3,6 +3,8 @@
 import rospy
 from sensor_msgs.msg import Imu
 
+df=pd.DataFrame({"Time":[0.0],"AngularV":[0.0]},columns=["Time","AngularV"])
+
 def callback(msg):
 
 	print("Angular velocity is: ",round(msg.angular_velocity.z,3))
