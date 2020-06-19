@@ -29,7 +29,6 @@ sub=rospy.Subscriber("/imu",Imu,callback)
 rate=rospy.Rate(1)
 
 while not rospy.is_shutdown():
-	
 	rate.sleep() 
 
 
