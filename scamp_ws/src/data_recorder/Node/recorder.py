@@ -20,7 +20,7 @@ path_img = "/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/
 
 bridge = CvBridge()
 
-df = pd.DataFrame({"Time":[0.0],"LinearV":[0.0], "AngularV":[0.0]},columns=["Time","LinearV","AngularV"])
+df = pd.DataFrame({"Time":[0.0],"LinearA":[0.0], "AngularV":[0.0]},columns=["Time","LinearA","AngularV"])
 
 def mycall(image,imu): # "image" and "imu" are just "msgs" we used before in seperate callback fucntions
 
@@ -37,9 +37,9 @@ def mycall(image,imu): # "image" and "imu" are just "msgs" we used before in sep
 
 #================Velocity processing================
 
-	LinearV = round(imu.linear_acceleration.x,3)
-    	AngularVel = round(imu.angular_velocity.z,3)
-	df1 = pd.DataFrame({"Time":[time],"LinearV":[LinearV],"AngularV":[AngularVel]},columns=["Time","LinearV","AngularV"])
+	LinearA = round(imu.linear_acceleration.x,4)
+    	AngularVel = round(imu.angular_velocity.z,4)
+	df1 = pd.DataFrame({"Time":[time],"LinearA":[LinearA],"AngularV":[AngularVel]},columns=["Time","LinearA","AngularV"])
     	df = df.append(df1,ignore_index=True)
 
 	df.to_csv(os.path.join(path_vel,'Velocity.csv'))
@@ -55,6 +55,6 @@ rospy.init_node("DataCollection")
 image_sub= message_filters.Subscriber("/camera/rgb/image_raw", Image)
 imu_sub= message_filters.Subscriber("/imu",Imu)
 
-ts = message_filters.TimeSynchronizer([image_sub,imu_sub], 5)
+ts = message_filters.TimeSynchronizer([image_sub,imu_sub], 10)
 ts.registerCallback(mycall)
 rospy.spin()
