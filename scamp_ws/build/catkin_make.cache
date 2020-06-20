@@ -1,2 +1,2 @@
-turtlebot3:turtlebot3_bringup:turtlebot3_description:turtlebot3_fake:turtlebot3_gazebo:turtlebot3_msgs:turtlebot3_simulations:turtlebot3_teleop
+Teleop:camCap:data_recorder:maze world/my_simulation:turtlebot3:turtlebot3_bringup:turtlebot3_description:turtlebot3_fake:turtlebot3_gazebo:turtlebot3_msgs:turtlebot3_navigation:turtlebot3_simulations:turtlebot3_slam:turtlebot3_teleop
 -DCATKIN_DEVEL_PREFIX=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/devel -DCMAKE_INSTALL_PREFIX=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/install -G Unix Makefiles

@@ -1,0 +1,8 @@
+prefix=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/install
+
+Name: data_recorder
+Description: Description of data_recorder
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

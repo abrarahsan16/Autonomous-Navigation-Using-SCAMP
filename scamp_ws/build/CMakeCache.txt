@@ -262,6 +262,12 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Value Computed by CMake
+Converter_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/Teleop
+
+//Value Computed by CMake
+Converter_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/Teleop
+
 //Path to a program.
 DOXYGEN_EXECUTABLE:FILEPATH=DOXYGEN_EXECUTABLE-NOTFOUND
 
@@ -607,11 +613,26 @@ actionlib_DIR:PATH=/opt/ros/kinetic/share/actionlib/cmake
 //The directory containing a CMake configuration file for actionlib_msgs.
 actionlib_msgs_DIR:PATH=/opt/ros/kinetic/share/actionlib_msgs/cmake
 
+//Value Computed by CMake
+camCap_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/camCap
+
+//Value Computed by CMake
+camCap_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/camCap
+
 //The directory containing a CMake configuration file for catkin.
 catkin_DIR:PATH=/opt/ros/kinetic/share/catkin/cmake
 
 //The directory containing a CMake configuration file for cpp_common.
 cpp_common_DIR:PATH=/opt/ros/kinetic/share/cpp_common/cmake
+
+//The directory containing a CMake configuration file for cv_bridge.
+cv_bridge_DIR:PATH=/opt/ros/kinetic/share/cv_bridge/cmake
+
+//Value Computed by CMake
+data_recorder_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/data_recorder
+
+//Value Computed by CMake
+data_recorder_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/data_recorder
 
 //The directory containing a CMake configuration file for diagnostic_msgs.
 diagnostic_msgs_DIR:PATH=/opt/ros/kinetic/share/diagnostic_msgs/cmake
@@ -706,6 +727,12 @@ message_generation_DIR:PATH=/opt/ros/kinetic/share/message_generation/cmake
 
 //The directory containing a CMake configuration file for message_runtime.
 message_runtime_DIR:PATH=/opt/ros/kinetic/share/message_runtime/cmake
+
+//Value Computed by CMake
+my_simulation_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/maze world/my_simulation
+
+//Value Computed by CMake
+my_simulation_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/maze world/my_simulation
 
 //The directory containing a CMake configuration file for nav_msgs.
 nav_msgs_DIR:PATH=/opt/ros/kinetic/share/nav_msgs/cmake
@@ -813,10 +840,22 @@ turtlebot3_msgs_DIR:PATH=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SC
 turtlebot3_msgs_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/turtlebot3_msgs
 
 //Value Computed by CMake
+turtlebot3_navigation_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/turtlebot3_navigation
+
+//Value Computed by CMake
+turtlebot3_navigation_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/turtlebot3_navigation
+
+//Value Computed by CMake
 turtlebot3_simulations_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/turtlebot3_simulations
 
 //Value Computed by CMake
 turtlebot3_simulations_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/turtlebot3_simulations
+
+//Value Computed by CMake
+turtlebot3_slam_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/turtlebot3_slam
+
+//Value Computed by CMake
+turtlebot3_slam_SOURCE_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/turtlebot3_slam
 
 //Value Computed by CMake
 turtlebot3_teleop_BINARY_DIR:STATIC=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/build/turtlebot3_teleop
@@ -983,7 +1022,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=11
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=17
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

@@ -1,0 +1,8 @@
+prefix=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/install
+
+Name: Converter
+Description: Description of Converter
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
