@@ -39,8 +39,8 @@ def image_callback(msg):
 	#   ...........
 	#   ...........
 	# should have two FCs, both doing regression
-	# FC_LinearVel:  1 input
-	# FC_AngularVel: 1 input
+	# FC_LinearVel:  1 input, 1 output
+	# FC_AngularVel: 1 input, 1 output
 
 	# (if using collision prob, 1 input, 2 outputs(0 or 1)
 
