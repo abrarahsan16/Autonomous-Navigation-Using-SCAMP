@@ -56,7 +56,6 @@ def image_callback(msg):
 #---------------------------
 	mov = movement()   #
 	mov.move_command() #
-	mov.publish_vel()  #
 #---------------------------
 	#
        #
@@ -67,15 +66,13 @@ class movement :
     def __init__(self):
         self.pub_move = rospy.Publisher("/cmd_vel",Twist)
 	self.move=Twist() 
-
-    def publish_vel(self):
-	self.pub_move.publish(self.move)
-	print(self.move)
 	
     def move_command(self):
 	self.move.linear.x=data[0]
 	self.move.angular.z=data[1]
+	self.pub_move.publish(self.move)
 
+	print(self.move)
 
 
 rospy.init_node("Command")
