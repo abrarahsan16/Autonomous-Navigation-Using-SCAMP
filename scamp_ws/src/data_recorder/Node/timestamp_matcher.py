@@ -15,6 +15,14 @@ def timeFromFromFile(file_name):
     # Read the text file, and extract the timestamps
     try:
         angular_stamps = np.loadtxt(file_name,usecols=1, delimiter=',', skiprows=1, dtype=int)
+
+        # I got an error for loading so I made following change:
+        #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #
+        # angular_stamps=np.loadtxt(file_name,usecols=1, delimiter=',', skiprows=1,dtype=float) #
+        # angular_stamps=angular_stamps.astype(int)                                             #
+        # angular_stamps=np.delete(angular_stamps,0)                                            #
+        #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #
+        
         print("Done")
     except:
         print(file_name)
@@ -51,16 +59,20 @@ for exp in experiment:
     im_stamp = np.array(sorted(im_stamp))
     np.savetxt(exp + "/test.txt", im_stamp, delimiter=",",fmt="%d",header="AngularV")
 
+   
     # Extract time from the file
     file_name = exp + "/Velocity.csv"
     angular_stamps = timeFromFromFile(file_name)
 
     # Match the time stamps
-    #match_stamps, match_idx = getMatching(im_stamp, angular_stamps)
-    #match_idx = np.array(match_idx)
-    #print(match_idx)
-    #match_idx = match_idx[:,0]
-
+    match_stamps, match_idx = getMatching(im_stamp, angular_stamps)
+    match_idx = np.array(match_idx)
+    print(match_idx)
+    match_idx = match_idx[:,0]
+    
+    
+     #================================This is what I can undertsand so far ===================
+    
     # Get matched commands
     #original_fname = exp + "/Velocity.csv"
     #angular_steer = angularDataFromFile(original_fname, match_idx)
