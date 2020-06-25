@@ -49,7 +49,7 @@ for exp in experiment:
         stamp = int(re.sub(r'\.jpeg$','',im))
         im_stamp.append(stamp)
     im_stamp = np.array(sorted(im_stamp))
-    np.savetxt("/test.txt", im_stamp, delimiter=",",header="AngularV")
+    np.savetxt(exp + "/test.txt", im_stamp, delimiter=",",header="AngularV")
 
     # Extract time from the file
     file_name = exp + "/Velocity.csv"
