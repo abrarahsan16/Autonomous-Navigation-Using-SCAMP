@@ -14,7 +14,7 @@ def timeFromFromFile(file_name):
     angular_stamps = []
     # Read the text file, and extract the timestamps
     try:
-        angular_stamps = np.loadtxt(file_name,usecols=1, delimiter=',', skiprows=1, dtype=int)
+        angular_stamps = np.loadtxt(file_name,usecols=1, delimiter=',', skiprows=1, dtype=float)
 
         # I got an error for loading so I made following change:
         #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #
@@ -22,8 +22,7 @@ def timeFromFromFile(file_name):
         # angular_stamps=angular_stamps.astype(int)                                             #
         # angular_stamps=np.delete(angular_stamps,0)                                            #
         #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #   #
-        
-        print("Done")
+
     except:
         print(file_name)
     return angular_stamps
@@ -32,7 +31,8 @@ def angularDataFromFile(fname, idx):
     # Match the angular data to the matrix
     mat = []
     try:
-        mat = np.loadtxt(fname, usecols=3, skiprows=1,delimiter=',')
+        mat = np.loadtxt(fname, usecols=3, skiprows=1,delimiter=',', dtype=float)
+        print(mat)
         mat = mat[idx,:]
     except:
         print(fname)
@@ -46,7 +46,6 @@ def getMatching(arr1, arr2):
         idx = np.where(dist == 0)[0]
         match_stamps.append(arr2[idx])
         match_idx.append(idx)
-        print(match_idx)
     return match_stamps, match_idx
 
 for exp in experiment:
@@ -57,9 +56,9 @@ for exp in experiment:
         stamp = int(re.sub(r'\.jpeg$','',im))
         im_stamp.append(stamp)
     im_stamp = np.array(sorted(im_stamp))
-    np.savetxt(exp + "/test.txt", im_stamp, delimiter=",",fmt="%d",header="AngularV")
 
-   
+
+
     # Extract time from the file
     file_name = exp + "/Velocity.csv"
     angular_stamps = timeFromFromFile(file_name)
@@ -67,15 +66,17 @@ for exp in experiment:
     # Match the time stamps
     match_stamps, match_idx = getMatching(im_stamp, angular_stamps)
     match_idx = np.array(match_idx)
-    print(match_idx)
     match_idx = match_idx[:,0]
-    
-    
+
+    original_fname = exp + "/Velocity.csv"
+    angular_steer = angularDataFromFile(original_fname, match_idx)
+
+    np.savetxt(exp + "/test.txt", angular_steer, delimiter=",",fmt="%f",header="AngularV")
+
      #================================This is what I can undertsand so far ===================
-    
+
     # Get matched commands
-    #original_fname = exp + "/Velocity.csv"
-    #angular_steer = angularDataFromFile(original_fname, match_idx)
+
 
     #new_fname = exp + "/steer.txt"
     #np.savetxt(new_fname, angular_steer, delimiter=",",header="AngularV")
