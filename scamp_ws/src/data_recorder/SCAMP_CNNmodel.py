@@ -35,10 +35,9 @@ def CNN(img_width, img_height, img_channels):
 
 
 	print(model.summary())
-	
+
 	return model
 
-model=CNN(240,320,1) 
+model=CNN(240,320,1)
+tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
 model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['accuracy'])
-
-
