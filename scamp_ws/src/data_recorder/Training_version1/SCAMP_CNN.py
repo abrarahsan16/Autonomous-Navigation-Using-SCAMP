@@ -48,8 +48,8 @@ val_generator =val_datagen.flow_from_directory("/home/andrew/turtlebot3_ws/src/C
 
 
 #=====================================COMPILE AND TRAIN================================================
-
-model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['accuracy'])
+optimizer = optimizers.Adam(decay=1e-5)
+model.compile(loss='mean_squared_error', optimizer=optimizer, metrics=['accuracy'])
 print('Training-------------------------------------------------------------------')
 
 
