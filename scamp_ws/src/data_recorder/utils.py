@@ -1,19 +1,27 @@
 import re
 import os
+#os.environ['CUDA_VISIBLE_DEVICES']='-1'
 import numpy as np
 import tensorflow as tf
 import json
-
+import cv2
 from keras import backend as K
 from keras.preprocessing.image import Iterator
 from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import load_img
 from keras.utils.generic_utils import Progbar
 from keras.models import model_from_json
 
 class DataGenerator(ImageDataGenerator):
 
-    def flow_from_directory(self, directory, target_size=(240,320), crop_size=(250,250), color_mode='grayscale', batch_size=32, shuffle=True, seed=None, follow_links=False):
-        return DirectoryIterator(directory, self, target_size=target_size, crop_size=crop_size, color_mode=color_mode, batch_size=batch_size, shuffle=shuffle, seed=seed, follow_links=follow_links)
+    def flow_from_directory(self, directory, target_size=(480,640),
+            crop_size=(480,640), color_mode='grayscale', batch_size=32,
+            shuffle=True, seed=None, follow_links=False):
+
+        return DirectoryIterator(directory, self, target_size=target_size,
+                crop_size=crop_size, color_mode=color_mode,
+                batch_size=batch_size, shuffle=shuffle,
+                seed=seed, follow_links=follow_links)
 
 class DirectoryIterator(Iterator):
     """
@@ -32,12 +40,17 @@ class DirectoryIterator(Iterator):
                     Velocity.txt
     """
 
-    def __init__(self, directory, image_data_generator, target_size=(240,320),crop_size=(250,250), color_mode='grayscale',batch_size=32, shuffle=True,seed=None,follow_links=False):
+    def __init__(self, directory, image_data_generator, target_size=(480,640),
+            crop_size=(250,250), color_mode='grayscale',batch_size=32,
+            shuffle=True,seed=None,follow_links=False):
+
         self.directory = directory
         self.image_data_generator = image_data_generator
         self.target_size = tuple(target_size)
         self.crop_size = tuple(crop_size)
         self.follow_links = follow_links
+
+
         if color_mode not in {'rgb', 'grayscale'}:
             raise ValueError('Invalid color mode:', color_mode,
                              '; expected "rgb" or "grayscale".')
@@ -76,33 +89,26 @@ class DirectoryIterator(Iterator):
 
         print('Found {} images belonging to {} experiments.'.format(
                 self.samples, self.num_experiments))
-        super(DroneDirectoryIterator, self).__init__(self.samples,
+        super(DirectoryIterator, self).__init__(self.samples,
                 batch_size, shuffle, seed)
 
     def _recursive_list(self, subpath):
         return sorted(os.walk(subpath, followlinks=self.follow_links),
                 key=lambda tpl: tpl[0])
+
     def _decode_experiment_dir(self, dir_subpath):
         # Load steerings angle in the experiment dir
         steerings_filename = os.path.join(dir_subpath, "Velocity.txt")
 
-        try:
-            ground_truth = np.loadtxt(steerings_filename, usecols=1,
-                                  delimiter=',', skiprows=1)
-            exp_type = 1
-        except OSError as e:
-            # Try load collision labels if there are no steerings
-            try:
-                ground_truth = np.loadtxt(labels_filename, usecols=0)
-                exp_type = 0
-            except OSError as e:
-                print("Neither steerings nor labels found in dir {}".format(
-                dir_subpath))
-                raise IOError
+        ground_truth = np.loadtxt(steerings_filename, usecols=1,
+                              delimiter=',', skiprows=1)
+        print("Loaded Velocity from {}".format(dir_subpath))
+        exp_type = 1
 
 
         # Now fetch all images in the image subdir
         image_dir_path = os.path.join(dir_subpath, "img")
+
         for root, _, files in self._recursive_list(image_dir_path):
             sorted_files = sorted(files,
                     key = lambda fname: int(re.search(r'\d+',fname).group()))
@@ -139,38 +145,41 @@ class DirectoryIterator(Iterator):
         # parallel
         batch_x = np.zeros((current_batch_size,) + self.image_shape,
                 dtype=K.floatx())
-        batch_steer = np.zeros((current_batch_size, 2,),
+        batch_steer = np.zeros((current_batch_size, 1,),
                 dtype=K.floatx())
-        batch_coll = np.zeros((current_batch_size, 2,),
-                dtype=K.floatx())
+        #batch_coll = np.zeros((current_batch_size, 1,),dtype=K.floatx())
 
         grayscale = self.color_mode == 'grayscale'
 
         # Build batch of image data
         for i, j in enumerate(index_array):
             fname = self.filenames[j]
-            x = img_utils.load_img(os.path.join(self.directory, fname),
-                    grayscale=grayscale,
-                    crop_size=self.crop_size,
-                    target_size=self.target_size)
+            x = cv2.imread(os.path.join(self.directory,fname))
+            # x = load_img(os.path.join(self.directory,fname))
+            #x = cv2.resize(x,(int(x.shape[1] * 0.5), int(x.shape[0]*0.5)))
+            x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
-            x = self.image_data_generator.random_transform(x)
-            x = self.image_data_generator.standardize(x)
+            #x = self.image_data_generator.random_transform(x)
+            #x = self.image_data_generator.standardize(x)
+
+            x = x.reshape((x.shape[0],x.shape[1],1))
+            x = np.asarray(x, dtype=np.int32)
+
             batch_x[i] = x
+            cv2.destroyAllWindows()
 
             # Build batch of steering and collision data
             if self.exp_type[index_array[i]] == 1:
                 # Steering experiment (t=1)
-                batch_steer[i,0] =1.0
-                batch_steer[i,1] = self.ground_truth[index_array[i]]
-                batch_coll[i] = np.array([1.0, 0.0])
+                batch_steer[i,0] = self.ground_truth[index_array[i]]
             else:
                 # Collision experiment (t=0)
                 batch_steer[i] = np.array([0.0, 0.0])
                 batch_coll[i,0] = 0.0
                 batch_coll[i,1] = self.ground_truth[index_array[i]]
 
-        batch_y = [batch_steer, batch_coll]
+        batch_y = batch_steer
+
         return batch_x, batch_y
 
 def compute_predictions_and_gt(model, generator, steps,

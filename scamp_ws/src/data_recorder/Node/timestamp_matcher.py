@@ -60,5 +60,22 @@ for exp in experiment:
     original_fname = exp + "/Velocity.csv"
     angular_steer = angularDataFromFile(original_fname, match_idx)
 
+    tt = np.array(match_stamps)
+    tt = tt[:,0]
+    tt = tt/1000000
+    angle = []
+    angle.append(0)
+    b = 0.0
+    for a in range(len(angular_steer)):
+        if (a+1)>len(angular_steer)-1:
+            break
+        t0 = tt[a]
+        t1 = tt[a+1]
+        timeDiff = t1-t0
+        b = angular_steer[a+1,1]/timeDiff
+        angle.append(b)
+    print(angle)
+    test = np.column_stack((angular_steer, angle))
+
     new_fname = exp + "/Velocity.txt"
-    np.savetxt(new_fname, angular_steer, delimiter=",",fmt="%f",header="LinearA, AngularV")
+    np.savetxt(new_fname, test, delimiter=",",fmt="%f",header="LinearA, AngularV, Angle")
