@@ -48,4 +48,4 @@ class callBack(tf.keras.callbacks.Callback):
 
 callbacks = callBack()
 
-model.fit_generator(train_generator,steps_per_epoch=500,max_queue_size=5, epochs=10, verbose=1,callbacks = [callbacks],workers=3, validation_data=val_generator,validation_steps=int(validation_generator.samples/32))
+model.fit_generator(train_generator,steps_per_epoch=500,max_queue_size=5, epochs=10, verbose=1,callbacks = [callbacks],workers=3, validation_data=val_generator,validation_steps=int(val_generator.samples/32))
