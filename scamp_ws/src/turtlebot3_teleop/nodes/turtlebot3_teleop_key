@@ -29,6 +29,7 @@
 
 import rospy
 from geometry_msgs.msg import Twist, TwistStamped
+from sensor_msgs.msg import Image
 import time
 
 import sys, select, os
@@ -123,6 +124,14 @@ def checkAngularLimitVelocity(vel):
 
     return vel
 
+def velPuber(vel):
+
+    twistSt.twist = twist
+    now = vel.header.stamp
+    twistSt.header.stamp.secs = now.secs
+    twistSt.header.stamp.nsecs = now.nsecs
+    pub2.publish(twistSt)
+
 if __name__=="__main__":
     if os.name != 'nt':
         settings = termios.tcgetattr(sys.stdin)
@@ -130,6 +139,7 @@ if __name__=="__main__":
     rospy.init_node('turtlebot3_teleop')
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     pub2 = rospy.Publisher('vel_timer', TwistStamped, queue_size=10)
+    rate = rospy.Rate(25)
 
     turtlebot3_model = rospy.get_param("model", "burger")
 
@@ -182,13 +192,13 @@ if __name__=="__main__":
             control_angular_vel = makeSimpleProfile(control_angular_vel, target_angular_vel, (ANG_VEL_STEP_SIZE/2.0))
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
 
-            twistSt.twist = twist
-            now = rospy.get_rostime()
-            twistSt.header.stamp.secs = now.secs
-            twistSt.header.stamp.nsecs = now.nsecs
+
 
             pub.publish(twist)
-            pub2.publish(twistSt)
+
+            rospy.Subscriber("/camera/rgb/image_raw", Image, velPuber)
+
+
 
     except:
         print(e)
