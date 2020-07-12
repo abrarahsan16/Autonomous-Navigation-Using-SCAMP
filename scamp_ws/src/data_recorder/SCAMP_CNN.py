@@ -48,5 +48,17 @@ class callBack(tf.keras.callbacks.Callback):
 
 callbacks = callBack()
 
+
 #model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32), validation_data=val_generator,validation_steps=int(val_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
 model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+
+
+model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me it's home/
+
+model2 = SCAMP_CNNmodel.CNN(img_width,img_height,img_channels,output_dim) #define new model that has the same structure
+model2.load_weights('my_model_weights.h5') 
+model2.compile(optimizer=adam,loss='mean_squared_error',optimizer=opt,metrics=['accuracy']) #compile new model that has trained weight loaded.
+# train again...
+# I haven't tested yet if this way would work.
+
+
