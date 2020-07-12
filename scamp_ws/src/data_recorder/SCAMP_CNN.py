@@ -15,7 +15,7 @@ import SCAMP_CNNmodel
 img_width=480
 img_height=640
 img_channels=1
-output_dim=1
+output_dim=3
 
 def combine_generator(gen1, gen2):
     while True:
@@ -34,7 +34,7 @@ val_generator = train_datagen.flow_from_directory("/home/abrarahsan16/SCAMP/Auto
 #xTrain, xTest, yTrain, yTest = train_test_split(train_generator, test_size=0.4, random_state=0)
 
 combgen = combine_generator(train_generator,val_generator)
-opt = optimizers.Adam(lr=0.01)
+opt = optimizers.Adam(lr=0.0001)
 
 model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
 print("Training..................................................................")
@@ -48,4 +48,5 @@ class callBack(tf.keras.callbacks.Callback):
 
 callbacks = callBack()
 
-model.fit_generator(train_generator,steps_per_epoch=500,max_queue_size=5, epochs=10, verbose=1,callbacks = [callbacks],workers=3, validation_data=val_generator,validation_steps=int(val_generator.samples/32))
+#model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32), validation_data=val_generator,validation_steps=int(val_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)

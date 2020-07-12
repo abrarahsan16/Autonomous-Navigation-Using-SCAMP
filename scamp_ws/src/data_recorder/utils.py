@@ -100,9 +100,10 @@ class DirectoryIterator(Iterator):
         # Load steerings angle in the experiment dir
         steerings_filename = os.path.join(dir_subpath, "Velocity.txt")
 
-        ground_truth = np.loadtxt(steerings_filename, usecols=1,
+        ground_truth = np.loadtxt(steerings_filename, usecols=(2,3,4),
                               delimiter=',', skiprows=1)
         print("Loaded Velocity from {}".format(dir_subpath))
+
         exp_type = 1
 
 
@@ -141,12 +142,14 @@ class DirectoryIterator(Iterator):
             The next batch of images and labels.
         """
         current_batch_size = index_array.shape[0]
+
         # Image transformation is not under thread lock, so it can be done in
         # parallel
         batch_x = np.zeros((current_batch_size,) + self.image_shape,
                 dtype=K.floatx())
-        batch_steer = np.zeros((current_batch_size, 1,),
+        batch_steer = np.zeros((current_batch_size, 3,),
                 dtype=K.floatx())
+
         #batch_coll = np.zeros((current_batch_size, 1,),dtype=K.floatx())
 
         grayscale = self.color_mode == 'grayscale'
@@ -159,7 +162,7 @@ class DirectoryIterator(Iterator):
             #x = cv2.resize(x,(int(x.shape[1] * 0.5), int(x.shape[0]*0.5)))
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
-            #x = self.image_data_generator.random_transform(x)
+            x = self.image_data_generator.random_transform(x)
             #x = self.image_data_generator.standardize(x)
 
             x = x.reshape((x.shape[0],x.shape[1],1))
@@ -170,8 +173,10 @@ class DirectoryIterator(Iterator):
 
             # Build batch of steering and collision data
             if self.exp_type[index_array[i]] == 1:
+                #print(self.ground_truth[index_array[i]])
                 # Steering experiment (t=1)
-                batch_steer[i,0] = self.ground_truth[index_array[i]]
+                batch_steer[i,0:2] = self.ground_truth[index_array[i],0:2]
+                #print(batch_x.shape)
             else:
                 # Collision experiment (t=0)
                 batch_steer[i] = np.array([0.0, 0.0])
@@ -179,6 +184,7 @@ class DirectoryIterator(Iterator):
                 batch_coll[i,1] = self.ground_truth[index_array[i]]
 
         batch_y = batch_steer
+
 
         return batch_x, batch_y
 
