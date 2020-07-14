@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 import sys
-
+import matplotlib.pyplot as plt
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 from keras import optimizers
@@ -39,18 +39,51 @@ opt = optimizers.Adam(lr=0.0001)
 model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
 print("Training..................................................................")
 
-DESIRED_ACCURACY = 0.60
+class myCallback(tf.keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.i = 0
+        self.x = []
+        self.losses = []
+        self.acc= []
+        self.fig = plt.figure()
+        self.logs = []
 
-class callBack(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
-        if((logs.get("Acc")>DESIRED_ACCURACY and (logs.get('val_acc')>DESIRED_ACCURACY) )):
-            print("\nReached 60% accuracy so cancelling training!")
+        # rewrite on_epoch_end, to plt at the end of each epoch, 
+        #if things go too off, we dont have to wait until the end to kill it and adjust 
+        # I'm not sure if there is a function that can be called every step of training.
+       
+        self.logs.append(logs)
+        self.x.append(self.i)
+        self.losses.append(logs.get('loss'))
+        self.acc.append(logs.get('acc'))
+        self.i+= 1
+        
 
-callbacks = callBack()
+        plt.plot(self.x, self.losses, label="loss")
+        plt.plot(self.x, self.acc, label="acc")
+        plt.legend()
+        plt.show(block=False)
+	    plt.pause(1) # wait for 1 sec and then close the figure so the training can continue.
+	    plt.close();
+
+callbacks = myCallback()
 
 
 #model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32), validation_data=val_generator,validation_steps=int(val_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
-model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/32),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+
+# Final acc and loss graph when all trainings are done 
+loss_train = history.history['loss']
+acc_train = history.history['acc']
+plt.plot(loss_train, 'g', label='Training loss')
+plt.plot(acc_train, 'b', label='Training accuracy')
+plt.title('This is a title')
+plt.xlabel('Epochs')
+plt.ylabel('this is y label')
+plt.legend()
+plt.show()
+
 
 
 model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me it's home/
