@@ -1,6 +1,0 @@
-This world is based on turtlebot3 model and nodes.
-
-Add "my_maze" folder in hidden file .gazebo/models/
-Add "my_simulation" folder in TurtleBot3 workingspace.
-To run the maze world:
-		 $ roslaunch my_simulation my.world.launch

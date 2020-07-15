@@ -49,9 +49,9 @@ def mycall(image,vel): # "image" and "imu" are just "msgs" we used before in sep
 
 
 rospy.init_node("DataCollection")
-image_sub= message_filters.Subscriber("/camera/rgb/image_raw", Image, queue_size=100)
-vel_sub= message_filters.Subscriber("vel_timer",TwistStamped, queue_size=100)
+image_sub= message_filters.Subscriber("/camera/rgb/image_raw", Image, queue_size=1000)
+vel_sub= message_filters.Subscriber("vel_timer",TwistStamped, queue_size=1000)
 
-ts = message_filters.TimeSynchronizer([image_sub,vel_sub], queue_size=100)
+ts = message_filters.TimeSynchronizer([image_sub,vel_sub], queue_size=1000)
 ts.registerCallback(mycall)
 rospy.spin()

@@ -28,7 +28,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import rospy
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, TwistStamped
+from sensor_msgs.msg import Image
+import time
+
 import sys, select, os
 if os.name == 'nt':
   import msvcrt
@@ -121,12 +124,23 @@ def checkAngularLimitVelocity(vel):
 
     return vel
 
+def velPuber(vel):
+    pub2 = rospy.Publisher('vel_timer', TwistStamped, queue_size=100)
+
+    twistSt.twist = twist
+    now = vel.header.stamp
+    twistSt.header.stamp.secs = now.secs
+    twistSt.header.stamp.nsecs = now.nsecs
+    pub2.publish(twistSt)
+
+
 if __name__=="__main__":
     if os.name != 'nt':
         settings = termios.tcgetattr(sys.stdin)
 
     rospy.init_node('turtlebot3_teleop')
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+
 
     turtlebot3_model = rospy.get_param("model", "burger")
 
@@ -171,6 +185,7 @@ if __name__=="__main__":
                 status = 0
 
             twist = Twist()
+            twistSt = TwistStamped()
 
             control_linear_vel = makeSimpleProfile(control_linear_vel, target_linear_vel, (LIN_VEL_STEP_SIZE/2.0))
             twist.linear.x = control_linear_vel; twist.linear.y = 0.0; twist.linear.z = 0.0
@@ -178,15 +193,25 @@ if __name__=="__main__":
             control_angular_vel = makeSimpleProfile(control_angular_vel, target_angular_vel, (ANG_VEL_STEP_SIZE/2.0))
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
 
+            rospy.Subscriber("/camera/rgb/image_raw", Image, velPuber, queue_size=100)
+
             pub.publish(twist)
+
+
+
+
 
     except:
         print(e)
 
     finally:
         twist = Twist()
+        twistSt = TwistStamped()
         twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0
         twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 0.0
+
+        twistSt.twist = twist
+        rospy.Subscriber("/camera/rgb/image_raw", Image, velPuber, queue_size=100)
         pub.publish(twist)
 
     if os.name != 'nt':

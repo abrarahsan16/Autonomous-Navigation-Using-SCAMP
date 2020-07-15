@@ -1,0 +1,8 @@
+prefix=/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/install
+
+Name: chris_world_models
+Description: Description of chris_world_models
+Version: 0.0.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: gazebo_ros gazebo_plugins geometry_msgs nav_msgs roscpp sensor_msgs std_msgs tf2_ros

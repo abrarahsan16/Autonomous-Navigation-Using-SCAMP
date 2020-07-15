@@ -15,7 +15,7 @@ from keras.models import model_from_json
 class DataGenerator(ImageDataGenerator):
 
     def flow_from_directory(self, directory, target_size=(480,640),
-            crop_size=(480,640), color_mode='grayscale', batch_size=32,
+            crop_size=(256,256), color_mode='grayscale', batch_size=32,
             shuffle=True, seed=None, follow_links=False):
 
         return DirectoryIterator(directory, self, target_size=target_size,
@@ -41,7 +41,7 @@ class DirectoryIterator(Iterator):
     """
 
     def __init__(self, directory, image_data_generator, target_size=(480,640),
-            crop_size=(250,250), color_mode='grayscale',batch_size=32,
+            crop_size=(256,256), color_mode='grayscale',batch_size=32,
             shuffle=True,seed=None,follow_links=False):
 
         self.directory = directory
@@ -162,12 +162,18 @@ class DirectoryIterator(Iterator):
             #x = cv2.resize(x,(int(x.shape[1] * 0.5), int(x.shape[0]*0.5)))
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
+            center_width = int(x.shape[1]/2)
+            center_height = int(x.shape[0]/2)
+            x = x[center_height - int(self.crop_size[0]/2):center_height + int(self.crop_size[0]/2),
+                    center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
+
+
             x = self.image_data_generator.random_transform(x)
             #x = self.image_data_generator.standardize(x)
 
             x = x.reshape((x.shape[0],x.shape[1],1))
             x = np.asarray(x, dtype=np.int32)
-
+            #print(x.shape)
             batch_x[i] = x
             cv2.destroyAllWindows()
 
