@@ -16,7 +16,7 @@ img_width=480
 img_height=640
 img_channels=1
 output_dim=3
-b_size = 32
+b_size = 3
 crop_width = 256
 crop_height = 256
 def combine_generator(gen1, gen2):
@@ -66,14 +66,14 @@ class myCallback(tf.keras.callbacks.Callback):
         plt.plot(self.x, self.acc, label="acc")
         plt.legend()
         plt.show(block=False)
-        plt.pause(1) # wait for 1 sec and then close the figure so the training can continue.
+        plt.pause(10) # wait for 1 sec and then close the figure so the training can continue.
         plt.close();
 
 callbacks = myCallback()
 
 
-#model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
-history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+#history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
 
 # Final acc and loss graph when all trainings are done
 loss_train = history.history['loss']
@@ -90,7 +90,7 @@ plt.show()
 
 model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me it's home/
 
-model2 = SCAMP_CNNmodel.CNN(img_width,img_height,img_channels,output_dim) #define new model that has the same structure
+model2 = SCAMP_CNNmodel.CNN(crop_width,crop_height,img_channels,output_dim) #define new model that has the same structure
 model2.load_weights('my_model_weights.h5')
 model2.compile(loss='mean_squared_error',optimizer=opt,metrics=['accuracy']) #compile new model that has trained weight loaded.
 # train again...
