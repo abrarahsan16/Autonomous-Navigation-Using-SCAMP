@@ -32,7 +32,7 @@ def CNN(img_width, img_height, img_channels, output_dim):
 	model.add(Flatten())
 	model.add(Dense(200))
 	model.add(Dense(output_dim))
-	model.add(Activation('softmax'))
+	model.add(Activation('hard_sigmoid'))
 
 
 	print(model.summary())
