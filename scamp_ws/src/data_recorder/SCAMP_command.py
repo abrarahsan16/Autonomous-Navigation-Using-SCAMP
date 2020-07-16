@@ -38,20 +38,25 @@ def image_callback(msg):
 	
 	with graph.as_default():
      		result= model.predict(np_img)
-		print(result)
 		
-
+	result=result.flatten()
+	print(result)	
+	
+	index=np.argmax(result, axis=0)
 	print("===============")
 		
-	if result[0][0]==1.0:
+	if index==0:
 		print("L")
-		turn=0.1
-	if result[0][1]==1.0:
+		turn=-0.4
+
+	if index==1:
 		print("S")
 		turn=0.0
-	else: 
+
+	if index==2:
 		print("R")
-		turn=-0.1
+		turn=0.4
+
 
 	mov = movement()   
 	mov.move_command() 
