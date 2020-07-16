@@ -41,6 +41,7 @@ opt = optimizers.Adam(lr=0.0001)
 model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
 print("Training..................................................................")
 
+
 class myCallback(tf.keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
         self.i = 0
