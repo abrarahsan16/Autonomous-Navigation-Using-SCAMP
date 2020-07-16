@@ -48,7 +48,7 @@ def image_callback(msg):
 		turn=0.1
 	if result[0][1]==1.0:
 		print("S")
-		turn=0.1
+		turn=0.0
 	else: 
 		print("R")
 		turn=-0.1
