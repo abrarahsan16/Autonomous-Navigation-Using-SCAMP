@@ -1,0 +1,11 @@
+
+train: 
+	wooden1_right, wooden2_left, wooden3_right, wooden4_left, wooden5
+validate:
+
+	Corridor1, maze4_48%, maze5_50%, maze_left3
+
+result:
+
+	loss: 0.0201 - acc: 0.9653 - val_loss: 0.1689 - val_acc: 0.7170
+
