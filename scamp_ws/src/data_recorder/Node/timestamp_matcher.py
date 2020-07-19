@@ -69,12 +69,12 @@ for exp in experiment:
     d = ""
     for a in range(len(angular_steer)):
         if angular_steer[a,1] > 0.1:
-            b = 0
-            c = 1
-            d = 0
-        elif angular_steer[a,1] < -0.1:
             b = 1
             c = 0
+            d = 0
+        elif angular_steer[a,1] < -0.1:
+            b = 0
+            c = 1
             d = 0
         else:
             b = 0
