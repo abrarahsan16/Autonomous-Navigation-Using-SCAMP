@@ -36,7 +36,7 @@ val_generator = train_datagen.flow_from_directory("/home/abrarahsan16/SCAMP/Auto
 #xTrain, xTest, yTrain, yTest = train_test_split(train_generator, test_size=0.4, random_state=0)
 
 combgen = combine_generator(train_generator,val_generator)
-opt = optimizers.Adam(lr=0.00001)
+opt = optimizers.Adam(lr=0.0001)
 
 #model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
 model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
@@ -93,7 +93,6 @@ class myCallback(tf.keras.callbacks.Callback):
             # or replace 'output' with whatever direcory you want to put in the plots
             plt.savefig('Plot Output/Epoch-{}.png'.format(epoch))
             plt.close()
-
 
 callbacks = myCallback()
 

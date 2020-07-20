@@ -169,7 +169,7 @@ class DirectoryIterator(Iterator):
 
 
             #x = self.image_data_generator.random_transform(x)
-            x = self.image_data_generator.standardize(x)
+            #x = self.image_data_generator.standardize(x)
 
             x = x.reshape((x.shape[0],x.shape[1],1))
             x = np.asarray(x, dtype=np.int32)
