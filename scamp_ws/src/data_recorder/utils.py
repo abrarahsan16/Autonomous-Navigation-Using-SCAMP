@@ -15,7 +15,7 @@ from keras.models import model_from_json
 class DataGenerator(ImageDataGenerator):
 
     def flow_from_directory(self, directory, target_size=(480,640),
-            crop_size=(256,256), color_mode='grayscale', batch_size=32,
+            crop_size=(256,256), color_mode='grayscale', batch_size=3,
             shuffle=True, seed=None, follow_links=False):
 
         return DirectoryIterator(directory, self, target_size=target_size,
@@ -168,8 +168,8 @@ class DirectoryIterator(Iterator):
                     center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
 
 
-            x = self.image_data_generator.random_transform(x)
-            #x = self.image_data_generator.standardize(x)
+            #x = self.image_data_generator.random_transform(x)
+            x = self.image_data_generator.standardize(x)
 
             x = x.reshape((x.shape[0],x.shape[1],1))
             x = np.asarray(x, dtype=np.int32)

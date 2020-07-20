@@ -36,9 +36,10 @@ val_generator = train_datagen.flow_from_directory("/home/abrarahsan16/SCAMP/Auto
 #xTrain, xTest, yTrain, yTest = train_test_split(train_generator, test_size=0.4, random_state=0)
 
 combgen = combine_generator(train_generator,val_generator)
-opt = optimizers.Adam(lr=0.0001)
+opt = optimizers.Adam(lr=0.00001)
 
-model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
+#model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
 print("Training..................................................................")
 
 
@@ -48,6 +49,8 @@ class myCallback(tf.keras.callbacks.Callback):
         self.x = []
         self.losses = []
         self.acc= []
+        self.val_losses = []
+        self.val_acc = []
         self.fig = plt.figure()
         self.logs = []
 
@@ -60,39 +63,61 @@ class myCallback(tf.keras.callbacks.Callback):
         self.x.append(self.i)
         self.losses.append(logs.get('loss'))
         self.acc.append(logs.get('acc'))
+        self.val_losses.append(logs.get('val_loss'))
+        self.val_acc.append(logs.get('val_acc'))
         self.i+= 1
 
+        # Before plotting ensure at least 2 epochs have passed
+        if len(self.losses) > 1:
 
-        plt.plot(self.x, self.losses, label="loss")
-        plt.plot(self.x, self.acc, label="acc")
-        plt.legend()
-        plt.show(block=False)
-        plt.pause(10) # wait for 1 sec and then close the figure so the training can continue.
-        plt.close();
+            N = np.arange(0, len(self.losses))
+
+            # You can chose the style of your preference
+            # print(plt.style.available) to see the available options
+            #plt.style.use("seaborn")
+
+            # Plot train loss, train acc, val loss and val acc against epochs passed
+            #plt.figure()
+            plt.show(block=False)
+            plt.plot(N, self.losses, label = "train_loss")
+            plt.plot(N, self.acc, label = "train_acc")
+            plt.plot(N, self.val_losses, label = "val_loss")
+            plt.plot(N, self.val_acc, label = "val_acc")
+            plt.title("Training Loss and Accuracy [Epoch {}]".format(epoch))
+            plt.xlabel("Epoch #")
+            plt.ylabel("Loss/Accuracy")
+            plt.legend()
+            #plt.show(block=False)
+            plt.pause(10) # wait for 10 sec and then close the figure so the training can continue.
+            # Make sure there exists a folder called output in the current directory
+            # or replace 'output' with whatever direcory you want to put in the plots
+            plt.savefig('Plot Output/Epoch-{}.png'.format(epoch))
+            plt.close()
+
 
 callbacks = myCallback()
 
 
-history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=11, verbose=1,callbacks = [callbacks],workers=5)
 #history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
 
 # Final acc and loss graph when all trainings are done
-loss_train = history.history['loss']
-acc_train = history.history['acc']
-plt.plot(loss_train, 'g', label='Training loss')
-plt.plot(acc_train, 'b', label='Training accuracy')
-plt.title('This is a title')
-plt.xlabel('Epochs')
-plt.ylabel('this is y label')
-plt.legend()
-plt.show()
+#loss_train = history.history['loss']
+#acc_train = history.history['acc']
+#plt.plot(loss_train, 'g', label='Training loss')
+#plt.plot(acc_train, 'b', label='Training accuracy')
+#plt.title('This is a title')
+#plt.xlabel('Epochs')
+#plt.ylabel('this is y label')
+#plt.legend()
+#plt.show()
 
 
 
 model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me it's home/
 
-model2 = SCAMP_CNNmodel.CNN(crop_width,crop_height,img_channels,output_dim) #define new model that has the same structure
-model2.load_weights('my_model_weights.h5')
-model2.compile(loss='mean_squared_error',optimizer=opt,metrics=['accuracy']) #compile new model that has trained weight loaded.
+#model2 = SCAMP_CNNmodel.CNN(crop_width,crop_height,img_channels,output_dim) #define new model that has the same structure
+#model2.load_weights('my_model_weights.h5')
+#model2.compile(loss='binary_crossentropy',optimizer=opt,metrics=['accuracy']) #compile new model that has trained weight loaded.
 # train again...
 # I haven't tested yet if this way would work.

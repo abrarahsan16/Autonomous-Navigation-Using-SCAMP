@@ -30,11 +30,11 @@ def CNN(img_width, img_height, img_channels, output_dim):
 
 
 	model.add(Flatten())
-	model.add(Dense(200))
+	model.add(Dense(100))
 	model.add(Dense(output_dim))
-	model.add(Activation('hard_sigmoid'))
+	model.add(Activation('tanh'))
 
 
 	print(model.summary())
-	tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
+	#tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
 	return model
