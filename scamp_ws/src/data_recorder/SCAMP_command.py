@@ -10,6 +10,9 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
+from keras.models import Model
+from matplotlib import pyplot
+
 bridge = CvBridge()
 
 turn = 0
@@ -41,6 +44,26 @@ def image_callback(msg):
 	with graph.as_default():
      		result= model.predict(np_img)
 
+		#Note the code must be under "with graph.as_default():" for live data stream,
+		#otherwise a tensor error will raise
+
+		Layer=Model(inputs=model.inputs,outputs=model.layers[3].output) 
+		# 3--> layer of "max_pooling2d_2 (MaxPooling2)"
+
+		print("==================")
+		print(Layer.summary())
+		print("==================")
+		
+
+		fm=Layer.predict(np_img)
+
+		pyplot.imshow(fm[0,:,:,2], cmap='viridis') 
+		#2--> the feature from the 3rd fillter
+		pyplot.savefig("/home/andrew/Z_feature_map/feature") #change accordingly 
+		
+		
+		
+		
 	result=result.flatten()
 	print(result)
 
