@@ -30,9 +30,9 @@ def CNN(img_width, img_height, img_channels, output_dim):
 
 
 	model.add(Flatten())
-	model.add(Dense(100))
+	model.add(Dense(200))
 	model.add(Dense(output_dim))
-	model.add(Activation('tanh'))
+	model.add(Activation('softmax'))
 
 
 	print(model.summary())

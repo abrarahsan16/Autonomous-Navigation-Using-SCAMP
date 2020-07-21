@@ -12,7 +12,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 bridge = CvBridge()
 
-turn=0
+turn = 0
 linear = 0
 
 import SCAMP_CNNmodel
@@ -45,31 +45,36 @@ def image_callback(msg):
 	print(result)
 
 	index=np.argmax(result, axis=0)
-	print("===============")
+
+	print("{} {}".format(linear, turn))
+	linear = result[1] * 0.1
+	#turn = 0.4*(result[0] - result[2])
 
 	if result[0] > result[2]:
 		print("L")
-		turn=0.4
-		linear=0
+		#turn=0.4
+		#linear=0
+		turn = 0.4*(result[0])
 
-	if result[1] > 2:
-		print("S")
+	#if result[1] > :
+		#print("S")
 		#turn=0.0
-		linear=0.05
+		#linear=0.05
 
 	if result[0] < result[2]:
 		print("R")
-		turn=-0.4
-		linear=0
+		#turn=-0.4
+		#linear=0
+		turn = -2*(result[2])
 
 	if result[0] == 0 and result[2] == 0:
 		turn=0
 
-	if result[0] == 0 and result[1] == 0 and result[2] == 0:
-		linear = -0.02
-		turn = 0.3
+	#if result[0] == 0 and result[1] == 0 and result[2] == 0:
+		#linear = -0.02
+		#turn = 0.3
 
-
+	print("===============")
 	mov = movement()
 	mov.move_command()
 

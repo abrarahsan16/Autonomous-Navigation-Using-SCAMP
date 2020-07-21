@@ -36,7 +36,7 @@ val_generator = train_datagen.flow_from_directory("/home/abrarahsan16/SCAMP/Auto
 #xTrain, xTest, yTrain, yTest = train_test_split(train_generator, test_size=0.4, random_state=0)
 
 combgen = combine_generator(train_generator,val_generator)
-opt = optimizers.Adam(lr=0.0001)
+opt = optimizers.Adam(lr=0.00001)
 
 #model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
 model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
@@ -97,7 +97,7 @@ class myCallback(tf.keras.callbacks.Callback):
 callbacks = myCallback()
 
 
-history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=11, verbose=1,callbacks = [callbacks],workers=5)
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=6, verbose=1,callbacks = [callbacks],workers=5)
 #history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
 
 # Final acc and loss graph when all trainings are done
