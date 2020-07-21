@@ -54,9 +54,9 @@ def image_callback(msg):
 		print("L")
 		#turn=0.4
 		#linear=0
-		turn = 0.4*(result[0])
+		turn = 0.4
 
-	#if result[1] > :
+	#if result[1] > 0:
 		#print("S")
 		#turn=0.0
 		#linear=0.05
@@ -65,7 +65,7 @@ def image_callback(msg):
 		print("R")
 		#turn=-0.4
 		#linear=0
-		turn = -2*(result[2])
+		turn = -0.4
 
 	if result[0] == 0 and result[2] == 0:
 		turn=0
