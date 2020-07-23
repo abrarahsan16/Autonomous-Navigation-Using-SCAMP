@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-
+import vis
 import rospy
 import numpy as np
 import cv2
@@ -11,7 +11,8 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
 from keras.models import Model
-from matplotlib import pyplot
+from matplotlib import pyplot as plt
+from matplotlib.pyplot import draw
 
 bridge = CvBridge()
 
@@ -25,8 +26,6 @@ model=SCAMP_CNNmodel.CNN(256,256,1,3)
 model.load_weights('my_model_weights.h5') #change according to need
 graph = tf.get_default_graph()
 print("weight loaded")
-
-
 
 #===================================Casting area===================================================
 def image_callback(msg):
@@ -47,23 +46,29 @@ def image_callback(msg):
 		#Note the code must be under "with graph.as_default():" for live data stream,
 		#otherwise a tensor error will raise
 
-		Layer=Model(inputs=model.inputs,outputs=model.layers[3].output) 
+		Layer=Model(inputs=model.inputs,outputs=model.layers[3].output)
 		# 3--> layer of "max_pooling2d_2 (MaxPooling2)"
 
+
 		print("==================")
-		print(Layer.summary())
+		#print(Layer.summary())
 		print("==================")
-		
+
 
 		fm=Layer.predict(np_img)
-
-		pyplot.imshow(fm[0,:,:,2], cmap='viridis') 
+		#plt.figure()
+		#plt.show(block=False)
+		#plt.ion()
+		plt.imshow(fm[0,:,:,2], cmap='viridis')
 		#2--> the feature from the 3rd fillter
-		pyplot.savefig("/home/andrew/Z_feature_map/feature") #change accordingly 
-		
-		
-		
-		
+		#pyplot.savefig("/home/andrew/Z_feature_map/feature")
+		#plt.pause(1) #change accordingly
+		plt.savefig("/home/abrarahsan16/feature_map/feature")
+		#plt.show()
+
+
+
+
 	result=result.flatten()
 	print(result)
 
