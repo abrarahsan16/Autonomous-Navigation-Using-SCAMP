@@ -14,10 +14,22 @@ from keras.models import Model
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import draw
 
+
+import keras
+import vis
+from vis.utils import utils
+from vis.visualization import visualize_cam
+
+
 bridge = CvBridge()
 
 turn = 0
 linear = 0
+count=0
+l1=[]
+l2=[]
+l3=[]
+
 
 import SCAMP_CNNmodel
 
@@ -46,16 +58,47 @@ def image_callback(msg):
 		#Note the code must be under "with graph.as_default():" for live data stream,
 		#otherwise a tensor error will raise
 
-		Layer=Model(inputs=model.inputs,outputs=model.layers[3].output)
+		mapmodel=Model(inputs=model.inputs,outputs=model.layers[2].output) 
 		# 3--> layer of "max_pooling2d_2 (MaxPooling2)"
+		# change to 7 for heat map
+		
+#===========================================================================================		
+		
+#		layer_idx=utils.find_layer_idx(mapmodel, 'activation_1')
+#		mapmodel.layers[layer_idx].activation = keras.activations.linear
+#		model2= utils.apply_modifications(mapmodel)
 
+#		y_pred=model2.predict(np_img)
+#		class_idxs_sorted =np.argsort(y_pred.flatten())[::-1]	
+#		test=np.argsort(y_pred.flatten())
+
+#		penultimate_layer_idx = utils.find_layer_idx(model2, "conv2d_1_input") 
+#		class_idx=class_idxs_sorted[0]
+
+#		seed_input=np_img
+
+#		grad_top1= visualize_cam(model2, layer_idx,[0],seed_input, 
+#                           penultimate_layer_idx = penultimate_layer_idx,
+#                           backprop_modifier= None,
+#                           grad_modifier= None)
+
+		
+#		fig,axes=plt.subplots(1,2,figsize=(14,5))
+#		axes[0].imshow(cv2_img)
+#		axes[1].imshow(cv2_img)
+#		i=axes[1].imshow(grad_top1,cmap="jet",alpha=0.3)
+#		fig.colorbar(i)
+#		pyplot.savefig("/home/andrew/Z_feature_map/map")
+#		plt.close()
+
+#===========================================================================================
 
 		print("==================")
 		#print(Layer.summary())
 		print("==================")
 
 
-		fm=Layer.predict(np_img)
+		fm=mapmodel.predict(np_img)
 		#plt.figure()
 		#plt.show(block=False)
 		#plt.ion()
@@ -65,13 +108,56 @@ def image_callback(msg):
 		#plt.pause(1) #change accordingly
 		plt.savefig("/home/abrarahsan16/feature_map/feature")
 		#plt.show()
+		#plt.close()
 
-
-
-
+#===========================================================================================
+	
 	result=result.flatten()
 	print(result)
+#===========================================================================================		
 
+#	l1.append(result[0])
+#	l2.append(result[1])
+#	l3.append(result[2])
+
+#	if count==5:
+
+#		avgL=sum(l1)/5
+#		avgS=sum(l2)/5
+#		avgR=sum(l3)/5
+
+
+#		print("LinearV: {} AngularV: {}".format(linear, turn))
+		
+#		linear=avgS*100
+
+		
+#		if avgL>avgR:
+#			print("L")
+#			turn = 40
+
+#		if avgL<avgR:
+#			print("R")
+#			turn = -40
+
+#		print("l1: "+str(l1))
+#		print("l2: "+str(l2))
+#		print("l3: "+str(l3))
+	
+#		print("AvgL: "+str(avgL))
+#		print("AvgS: "+str(avgS))		
+#		print("AvgR: "+str(avgR))
+
+#		print("====================")
+#		mov = movement()
+#		mov.move_command()
+		
+#		count=0
+#		l1=[]
+#		l2=[]
+#		l3=[]
+#===========================================================================================	
+	
 	index=np.argmax(result, axis=0)
 
 	print("{} {}".format(linear, turn))
