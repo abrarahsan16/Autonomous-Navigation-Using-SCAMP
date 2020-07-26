@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-import vis
+#import vis
 import rospy
 import numpy as np
 import cv2
 import tensorflow as tf
+import statistics as st
 
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
@@ -16,9 +17,9 @@ from matplotlib.pyplot import draw
 
 
 import keras
-import vis
-from vis.utils import utils
-from vis.visualization import visualize_cam
+#import vis
+#from vis.utils import utils
+#from vis.visualization import visualize_cam
 
 
 bridge = CvBridge()
@@ -45,6 +46,10 @@ def image_callback(msg):
 	global model
 	global turn
 	global linear
+	global l1
+	global l2
+	global l3
+	global count
 
 	cv2_img = bridge.imgmsg_to_cv2(msg,"bgr8")
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
@@ -58,31 +63,31 @@ def image_callback(msg):
 		#Note the code must be under "with graph.as_default():" for live data stream,
 		#otherwise a tensor error will raise
 
-		mapmodel=Model(inputs=model.inputs,outputs=model.layers[2].output) 
+		mapmodel=Model(inputs=model.inputs,outputs=model.layers[2].output)
 		# 3--> layer of "max_pooling2d_2 (MaxPooling2)"
 		# change to 7 for heat map
-		
-#===========================================================================================		
-		
+
+#=============================Heat Map Generation==================================================
+
 #		layer_idx=utils.find_layer_idx(mapmodel, 'activation_1')
 #		mapmodel.layers[layer_idx].activation = keras.activations.linear
 #		model2= utils.apply_modifications(mapmodel)
 
 #		y_pred=model2.predict(np_img)
-#		class_idxs_sorted =np.argsort(y_pred.flatten())[::-1]	
+#		class_idxs_sorted =np.argsort(y_pred.flatten())[::-1]
 #		test=np.argsort(y_pred.flatten())
 
-#		penultimate_layer_idx = utils.find_layer_idx(model2, "conv2d_1_input") 
+#		penultimate_layer_idx = utils.find_layer_idx(model2, "conv2d_1_input")
 #		class_idx=class_idxs_sorted[0]
 
 #		seed_input=np_img
 
-#		grad_top1= visualize_cam(model2, layer_idx,[0],seed_input, 
+#		grad_top1= visualize_cam(model2, layer_idx,[0],seed_input,
 #                           penultimate_layer_idx = penultimate_layer_idx,
 #                           backprop_modifier= None,
 #                           grad_modifier= None)
 
-		
+
 #		fig,axes=plt.subplots(1,2,figsize=(14,5))
 #		axes[0].imshow(cv2_img)
 #		axes[1].imshow(cv2_img)
@@ -91,106 +96,121 @@ def image_callback(msg):
 #		pyplot.savefig("/home/andrew/Z_feature_map/map")
 #		plt.close()
 
-#===========================================================================================
+#=======================================Feature Map=================================================
 
-		print("==================")
+		#print("==================")
 		#print(Layer.summary())
-		print("==================")
+		#print("==================")
 
 
-		fm=mapmodel.predict(np_img)
+		#fm=mapmodel.predict(np_img)
 		#plt.figure()
 		#plt.show(block=False)
 		#plt.ion()
-		plt.imshow(fm[0,:,:,2], cmap='viridis')
+		#plt.imshow(fm[0,:,:,2], cmap='viridis')
 		#2--> the feature from the 3rd fillter
 		#pyplot.savefig("/home/andrew/Z_feature_map/feature")
 		#plt.pause(1) #change accordingly
-		plt.savefig("/home/abrarahsan16/feature_map/feature")
+		#plt.savefig("/home/abrarahsan16/feature_map/feature")
 		#plt.show()
 		#plt.close()
 
 #===========================================================================================
-	
+
 	result=result.flatten()
-	print(result)
-#===========================================================================================		
+	#print(result)
 
-#	l1.append(result[0])
-#	l2.append(result[1])
-#	l3.append(result[2])
+#===========================================================================================
 
-#	if count==5:
+	l1.append(result[0])
+	l2.append(result[1])
+	l3.append(result[2])
+	count = count+1
+	if count==3:
 
-#		avgL=sum(l1)/5
-#		avgS=sum(l2)/5
-#		avgR=sum(l3)/5
+		avgL=sum(l1)/3
+		avgS=sum(l2)/3
+		avgR=sum(l3)/3
 
 
-#		print("LinearV: {} AngularV: {}".format(linear, turn))
-		
-#		linear=avgS*100
+		#avgL = st.median(l1)
+		#avgS = st.median(l2)
+		#avgR = st.median(l3)
 
-		
-#		if avgL>avgR:
-#			print("L")
-#			turn = 40
+		#print("{} {} {}".format(avgL, avgS, avgR))
 
-#		if avgL<avgR:
-#			print("R")
-#			turn = -40
 
-#		print("l1: "+str(l1))
-#		print("l2: "+str(l2))
-#		print("l3: "+str(l3))
-	
-#		print("AvgL: "+str(avgL))
-#		print("AvgS: "+str(avgS))		
-#		print("AvgR: "+str(avgR))
+		print("LinearV: {} AngularV: {}".format(linear, turn))
 
-#		print("====================")
-#		mov = movement()
-#		mov.move_command()
-		
-#		count=0
-#		l1=[]
-#		l2=[]
-#		l3=[]
-#===========================================================================================	
-	
-	index=np.argmax(result, axis=0)
+		if avgS>0.95:
+			print("S")
+			linear = 0.1
+			turn = (avgR - avgL)*0.4
+		else:
+			linear = 0
+			if avgS<0.8:
+				print("B")
+				linear = -0.01
+			else:
+				if avgL>avgR:
+					print("L")
+					turn = 0.4
 
-	print("{} {}".format(linear, turn))
-	linear = result[1] * 0.1
+				if avgL<avgR:
+					print("R")
+					turn = -0.4
+
+		#print("l1: "+str(l1))
+		#print("l2: "+str(l2))
+		#print("l3: "+str(l3))
+
+		#print("AvgL: "+str(avgL))
+		#print("AvgS: "+str(avgS))
+		#print("AvgR: "+str(avgR))
+		print("AvgL: {} AvgS: {} AvgR: {}".format(avgL, avgS, avgR))
+		print("====================")
+		mov = movement()
+		mov.move_command()
+
+		count=0
+		l1=[]
+		l2=[]
+		l3=[]
+#===========================================================================================
+
+#	index=np.argmax(result, axis=0)
+
+#	print("{} {}".format(linear, turn))
+#	linear = result[1] * 0.1
 	#turn = 0.4*(result[0] - result[2])
 
-	if result[0] > result[2]:
-		print("L")
+#	if result[0] > result[2]:
+#		print("L")
 		#turn=0.4
 		#linear=0
-		turn = 0.4
+#		turn = 0.4
 
 	#if result[1] > 0:
 		#print("S")
 		#turn=0.0
 		#linear=0.05
 
-	if result[0] < result[2]:
-		print("R")
+#	if result[0] < result[2]:
+#		print("R")
 		#turn=-0.4
 		#linear=0
-		turn = -0.4
+#		turn = -0.4
 
-	if result[0] == 0 and result[2] == 0:
-		turn=0
+#	if result[0] == 0 and result[2] == 0:
+#		turn=0
 
 	#if result[0] == 0 and result[1] == 0 and result[2] == 0:
 		#linear = -0.02
 		#turn = 0.3
 
-	print("===============")
-	mov = movement()
-	mov.move_command()
+#	print("===============")
+#	mov = movement()
+#	mov.move_command()
 
 #=======================================Set command===============================================
 class movement :
