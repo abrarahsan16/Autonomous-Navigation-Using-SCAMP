@@ -53,7 +53,12 @@ def image_callback(msg):
 
 	cv2_img = bridge.imgmsg_to_cv2(msg,"bgr8")
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
-	cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
+	#cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
+	center_width = int(cv2_gray.shape[1]/2)
+	center_height = int(420)
+	cv2_res = cv2_gray[center_height - int(256):center_height,
+						center_width - int(256/2):center_width + int(256/2)]
+
         np_img = np.asarray(cv2_res)
 	np_img=np_img.reshape([1,256,256,1])
 
@@ -63,7 +68,7 @@ def image_callback(msg):
 		#Note the code must be under "with graph.as_default():" for live data stream,
 		#otherwise a tensor error will raise
 
-		mapmodel=Model(inputs=model.inputs,outputs=model.layers[2].output)
+		#mapmodel=Model(inputs=model.inputs,outputs=model.layers[2].output)
 		# 3--> layer of "max_pooling2d_2 (MaxPooling2)"
 		# change to 7 for heat map
 
@@ -148,9 +153,10 @@ def image_callback(msg):
 			turn = (avgR - avgL)*0.4
 		else:
 			linear = 0
-			if avgS<0.8:
+			if avgS<0.55:
 				print("B")
 				linear = -0.01
+				turn = 0
 			else:
 				if avgL>avgR:
 					print("L")

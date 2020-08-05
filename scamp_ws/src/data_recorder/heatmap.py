@@ -34,8 +34,8 @@ for exp in experiment:
     outp = outputFolder
     print(exp)
     images = [os.path.basename(x) for x in glob.glob(exp + "/img/*.jpeg")]
-    mapmodel = Model(inputs=model.inputs, outputs=model.layers[7].output)
-    mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[2].output)
+    mapmodel = Model(inputs=model.inputs, outputs=model.layers[11].output)
+    mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[6].output)
     layer_idx=utils.find_layer_idx(mapmodel, 'activation_1')
     #layer_idx=utils.find_layer_idx(mapmodel, 'max_pooling2d_2')
     mapmodel.layers[layer_idx].activation = keras.activations.linear
@@ -46,7 +46,10 @@ for exp in experiment:
         im = exp + "/img/"+ im
         im = cv2.imread(im)
         cv2_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-        cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
+        center_width = int(cv2_gray.shape[1]/2)
+    	center_height = int(cv2_gray.shape[0])
+        cv2_res = cv2_gray[420 - int(256):420,
+    						center_width - int(256/2):center_width + int(256/2)]
         np_img = np.asarray(cv2_res)
         out = np_img.reshape([1,256,256,1])
         #heatMap(im, stamp)
@@ -58,7 +61,7 @@ for exp in experiment:
         y_pred=model2.predict(out)
         class_idxs_sorted =np.argsort(y_pred.flatten())[::-1]
         test=np.argsort(y_pred.flatten())
-        penultimate_layer_idx = utils.find_layer_idx(model2, "conv2d_2")
+        penultimate_layer_idx = utils.find_layer_idx(model2, "conv2d_4")
         class_idx=class_idxs_sorted[0]
         seed_input=out
         grad_top1= visualize_cam(model2, layer_idx,[0],seed_input,

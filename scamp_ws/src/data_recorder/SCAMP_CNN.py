@@ -83,6 +83,7 @@ class myCallback(tf.keras.callbacks.Callback):
             plt.plot(N, self.acc, label = "train_acc")
             plt.plot(N, self.val_losses, label = "val_loss")
             plt.plot(N, self.val_acc, label = "val_acc")
+            
             plt.title("Training Loss and Accuracy [Epoch {}]".format(epoch))
             plt.xlabel("Epoch #")
             plt.ylabel("Loss/Accuracy")
@@ -91,13 +92,13 @@ class myCallback(tf.keras.callbacks.Callback):
             plt.pause(10) # wait for 10 sec and then close the figure so the training can continue.
             # Make sure there exists a folder called output in the current directory
             # or replace 'output' with whatever direcory you want to put in the plots
-            plt.savefig('Plot Output/Epoch-{}.png'.format(epoch))
+            plt.savefig('Plot Output/Epoch-{}.png'.format(epoch+1))
             plt.close()
 
 callbacks = myCallback()
 
-
-history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=6, verbose=1,callbacks = [callbacks],workers=5)
+tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=10, verbose=1,callbacks = [callbacks],workers=5)
 #history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)
 
 # Final acc and loss graph when all trainings are done

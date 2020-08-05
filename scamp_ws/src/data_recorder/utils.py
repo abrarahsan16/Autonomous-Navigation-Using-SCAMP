@@ -163,8 +163,9 @@ class DirectoryIterator(Iterator):
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
             center_width = int(x.shape[1]/2)
-            center_height = int(x.shape[0]/2)
-            x = x[center_height - int(self.crop_size[0]/2):center_height + int(self.crop_size[0]/2),
+            center_height = int(420)
+
+            x = x[center_height - int(self.crop_size[0]):center_height,
                     center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
 
 

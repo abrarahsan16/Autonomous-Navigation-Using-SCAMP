@@ -13,20 +13,20 @@ from keras.layers import Conv2D, MaxPooling2D
 def CNN(img_width, img_height, img_channels, output_dim):
 
 	model=Sequential()
-	model.add(Conv2D(3,(5,5),activation="relu",input_shape=(img_width,img_height,img_channels)))
+	model.add(Conv2D(3,(3,3),activation="relu",input_shape=(img_width,img_height,img_channels)))
 	model.add(MaxPooling2D(pool_size=(2,2)))
 
 
-	model.add(Conv2D(3,(5,5),activation="relu"))
+	model.add(Conv2D(3,(3,3),activation="relu"))
 	model.add(MaxPooling2D(pool_size=(2,2)))
 
 
-	#model.add(Conv2D(32,(4,4),activation="relu"))
-	#model.add(MaxPooling2D(pool_size=(2,2)))
+	model.add(Conv2D(3,(3,3),activation="relu"))
+	model.add(MaxPooling2D(pool_size=(2,2)))
 
 
-	#model.add(Conv2D(32,(4,4),activation="relu"))
-	#model.add(MaxPooling2D(pool_size=(2,2)))
+	model.add(Conv2D(3,(3,3),activation="relu"))
+	model.add(MaxPooling2D(pool_size=(2,2)))
 
 
 	model.add(Flatten())
@@ -36,5 +36,5 @@ def CNN(img_width, img_height, img_channels, output_dim):
 
 
 	print(model.summary())
-	#tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
+	
 	return model
