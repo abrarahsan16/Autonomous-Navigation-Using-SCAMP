@@ -47,7 +47,7 @@ for exp in experiment:
         im = cv2.imread(im)
         cv2_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
         center_width = int(cv2_gray.shape[1]/2)
-    	center_height = int(470)
+    	center_height = int(410)
         cv2_res = cv2_gray[center_height - int(256):center_height,
     						center_width - int(256/2):center_width + int(256/2)]
         np_img = np.asarray(cv2_res)
@@ -57,15 +57,18 @@ for exp in experiment:
 
         result = model.predict(out)
         result = result.flatten()
+        y= result[0]
+        yy=result[2]
+        yyy=result[1]
         if result[0]>result[2] and result[0]>0.4:
             s = "L"
-            y= result[0]
+
         elif result[0]<result[2] and result[2]>0.4:
             s="R"
-            y=result[2]
+
         else:
             s="S"
-            y=result[1]
+
 
 
         #mapmodel = Model(inputs=model.inputs, outputs=model.layers[3].output)
@@ -86,7 +89,7 @@ for exp in experiment:
         axes[1].imshow(fm[0,:,:,2], cmap='viridis')
         axes[1].set_title("Feature Map")
         axes[2].imshow(cv2_res)
-        axes[2].set_title("Grad Cam: {} {}".format(s, y))
+        axes[2].set_title("Grad Cam: {}, {}, {}, {}".format(s, y, yyy, yy))
         axes[2].imshow(grad_top1,cmap="jet",alpha=0.3)
         #fig.colorbar(i)
         addr = outputFolder + str(stamp)

@@ -55,7 +55,7 @@ def image_callback(msg):
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
 	#cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
 	center_width = int(cv2_gray.shape[1]/2)
-	center_height = int(470)
+	center_height = int(420)
 	cv2_res = cv2_gray[center_height - int(256):center_height,
 						center_width - int(256/2):center_width + int(256/2)]
 
@@ -131,11 +131,11 @@ def image_callback(msg):
 	l2.append(result[1])
 	l3.append(result[2])
 	count = count+1
-	if count==3:
+	if count==7:
 
-		avgL=sum(l1)/3
-		avgS=sum(l2)/3
-		avgR=sum(l3)/3
+		avgL=sum(l1)/7
+		avgS=sum(l2)/7
+		avgR=sum(l3)/7
 
 
 		#avgL = st.median(l1)
@@ -149,17 +149,25 @@ def image_callback(msg):
 
 
 
-		if avgS<0.95:
+		if avgS>0.2:
 			linear = 0.1
-			if avgL>avgR and avgL>0.3:
+			if avgL>avgR and avgL>0.4:
 				print("L")
-				turn = 0.2
-			elif avgL<avgR and avgR>0.3:
+				turn = 0.4
+			elif avgL<avgR and avgR>0.4:
 				print("R")
-				turn = -0.2
+				turn = -0.4
 			elif avgL < 0.3 and avgR < 0.3:
 				print("N")
-				turn = 0
+				linaer = 0.08
+				turn = (avgR - avgL)*.1
+		else :
+			linear = 0
+			if avgL<avgR:
+				turn = -0.4
+			elif avgL>avgR:
+				turn = 0.4
+
 		#elif avgS<0.4 and avgS>0.2:
 		#	print("S1")
 		#	linear = avgS*0.1
@@ -168,15 +176,15 @@ def image_callback(msg):
 		#	print("B")
 		#	linear = -0.01
 		#	turn = (avgL - avgR)*0.2
-		else:
-			print("S")
-			linear = 0
-			if avgL>avgR:
-				print("L")
-				turn = 0.05
-			elif avgL<avgR:
-				print("R")
-				turn = -0.05
+		#else:
+		#	print("S")
+		#	linear = 0
+		#	if avgL>avgR:
+		#		print("L")
+		#		turn = 0.05
+		#	elif avgL<avgR:
+		#		print("R")
+		#		turn = -0.05
 
 
 		#print("l1: "+str(l1))
