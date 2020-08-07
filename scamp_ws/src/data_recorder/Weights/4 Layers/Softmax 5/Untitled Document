@@ -1,0 +1,4 @@
+1078s 64ms/step - loss: 0.1974 - acc: 0.9328 - val_loss: 0.2623 - val_acc: 0.9087
+
+
+This weight uses resized image for training, instead of cropped image

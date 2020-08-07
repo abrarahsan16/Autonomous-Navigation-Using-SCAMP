@@ -83,7 +83,7 @@ class myCallback(tf.keras.callbacks.Callback):
             plt.plot(N, self.acc, label = "train_acc")
             plt.plot(N, self.val_losses, label = "val_loss")
             plt.plot(N, self.val_acc, label = "val_acc")
-            
+
             plt.title("Training Loss and Accuracy [Epoch {}]".format(epoch))
             plt.xlabel("Epoch #")
             plt.ylabel("Loss/Accuracy")
@@ -94,6 +94,7 @@ class myCallback(tf.keras.callbacks.Callback):
             # or replace 'output' with whatever direcory you want to put in the plots
             plt.savefig('Plot Output/Epoch-{}.png'.format(epoch+1))
             plt.close()
+            model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me it's home/
 
 callbacks = myCallback()
 

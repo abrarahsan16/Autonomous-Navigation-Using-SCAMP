@@ -47,7 +47,7 @@ for exp in experiment:
         im = cv2.imread(im)
         cv2_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
         center_width = int(cv2_gray.shape[1]/2)
-    	center_height = int(400)
+    	center_height = int(380)
         cv2_res = cv2_gray[center_height - int(256):center_height,
     						center_width - int(256/2):center_width + int(256/2)]
         np_img = np.asarray(cv2_res)
