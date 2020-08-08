@@ -41,15 +41,17 @@ for exp in experiment:
     mapmodel.layers[layer_idx].activation = keras.activations.linear
     model2= utils.apply_modifications(mapmodel)
     for im in images:
-        stamp = int(re.sub(r'\.jpeg$','',im))
+        stamp = str(re.sub(r'\.jpeg$','',im))
         #out = resizer(exp + "/img/"+ im)
         im = exp + "/img/"+ im
-        im = cv2.imread(im)
-        cv2_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+        im = cv2.imread(im, cv2.IMREAD_GRAYSCALE)
+        #cv2_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+        cv2_gray = im
         center_width = int(cv2_gray.shape[1]/2)
-    	center_height = int(380)
-        cv2_res = cv2_gray[center_height - int(256):center_height,
-    						center_width - int(256/2):center_width + int(256/2)]
+    	#center_height = int(380)
+        #cv2_res = cv2_gray[center_height - int(256):center_height,
+    	#					center_width - int(256/2):center_width + int(256/2)]
+        cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
         np_img = np.asarray(cv2_res)
         out = np_img.reshape([1,256,256,1])
         #heatMap(im, stamp)
@@ -60,11 +62,12 @@ for exp in experiment:
         y= result[0]
         yy=result[2]
         yyy=result[1]
-        if result[0]>result[2] and result[0]>0.4:
-            s = "L"
 
-        elif result[0]<result[2] and result[2]>0.4:
-            s="R"
+        if result[0]>result[2]:
+            s = "R"
+
+        elif result[0]<result[2]:
+            s="L"
 
         else:
             s="S"
@@ -84,11 +87,11 @@ for exp in experiment:
             backprop_modifier= None, grad_modifier= None)
 
         fig,axes=plt.subplots(1,3,figsize=(25,15))
-        axes[0].imshow(cv2_res)
+        axes[0].imshow(cv2_gray, cmap="gray")
         axes[0].set_title("Cov2D Input")
         axes[1].imshow(fm[0,:,:,2], cmap='viridis')
         axes[1].set_title("Feature Map")
-        axes[2].imshow(cv2_res)
+        axes[2].imshow(cv2_res, cmap="gray")
         axes[2].set_title("Grad Cam: {}, {}, {}, {}".format(s, y, yyy, yy))
         axes[2].imshow(grad_top1,cmap="jet",alpha=0.3)
         #fig.colorbar(i)

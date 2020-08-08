@@ -2,3 +2,8 @@
 
 
 This weight uses resized image for training, instead of cropped image
+
+Very left leaning when it notices a corner in the wall
+Doesnt recognize wall when it completely envelopes the frame
+
+
