@@ -84,12 +84,12 @@ class myCallback(tf.keras.callbacks.Callback):
             plt.plot(N, self.val_losses, label = "val_loss")
             plt.plot(N, self.val_acc, label = "val_acc")
 
-            plt.title("Training Loss and Accuracy [Epoch {}]".format(epoch))
+            plt.title("Training Loss and Accuracy [Epoch {}]".format(epoch+1))
             plt.xlabel("Epoch #")
             plt.ylabel("Loss/Accuracy")
             plt.legend()
             #plt.show(block=False)
-            plt.pause(10) # wait for 10 sec and then close the figure so the training can continue.
+            plt.pause(5) # wait for 5 sec and then close the figure so the training can continue.
             # Make sure there exists a folder called output in the current directory
             # or replace 'output' with whatever direcory you want to put in the plots
             plt.savefig('Plot Output/Epoch-{}.png'.format(epoch+1))

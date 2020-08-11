@@ -55,7 +55,7 @@ def image_callback(msg):
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
 	#cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
 	center_width = int(cv2_gray.shape[1]/2)
-	center_height = int(368)
+	center_height = int(420)
 	cv2_res = cv2_gray[center_height - int(256):center_height,
 						center_width - int(256/2):center_width + int(256/2)]
 
@@ -152,12 +152,12 @@ def image_callback(msg):
 			#turn = 0
 			if avgL>avgR:
 				print("L")
-				turn = (1-0.7)*turn + 0.7*(0.4)*avgL
+				turn = (1-0.7)*turn + 0.7*(-0.4)*avgL
 			elif avgL<avgR:
 				print("R")
-				turn = (1-0.7)*turn + 0.7*(-0.4)*avgR
+				turn = (1-0.7)*turn + 0.7*(0.4)*avgR
 		else:
-			linear = 0.02
+			linear = 0
 			if avgL>avgR:
 				print("L")
 				turn = 0.2
