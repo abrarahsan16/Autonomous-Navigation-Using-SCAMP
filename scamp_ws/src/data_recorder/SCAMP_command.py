@@ -27,6 +27,7 @@ bridge = CvBridge()
 turn = 0
 linear = 0
 count=0
+maxturn=""
 l1=[]
 l2=[]
 l3=[]
@@ -36,9 +37,14 @@ import SCAMP_CNNmodel
 
 
 model=SCAMP_CNNmodel.CNN(256,256,1,3)
-model.load_weights('my_model_weights.h5') #change according to need
+model.load_weights('123.h5') #change according to need
 graph = tf.get_default_graph()
 print("weight loaded")
+
+
+
+
+
 
 #===================================Casting area===================================================
 def image_callback(msg):
@@ -49,7 +55,7 @@ def image_callback(msg):
 	global l1
 	global l2
 	global l3
-	global count
+	global count,maxturn
 
 	cv2_img = bridge.imgmsg_to_cv2(msg,"bgr8")
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
@@ -131,11 +137,11 @@ def image_callback(msg):
 	l2.append(result[1])
 	l3.append(result[2])
 	count = count+1
-	if count==3:
+	if count==7:
 
-		avgL=sum(l1)/3
-		avgS=sum(l2)/3
-		avgR=sum(l3)/3
+		avgL=sum(l1)/7
+		avgS=sum(l2)/7
+		avgR=sum(l3)/7
 
 
 		#avgL = st.median(l1)
@@ -143,7 +149,8 @@ def image_callback(msg):
 		#avgR = st.median(l3)
 
 		#print("{} {} {}".format(avgL, avgS, avgR))
-
+	
+		# label is wall, not turn
 
 		print("LinearV: {} AngularV: {}".format(linear, turn))
 
@@ -157,23 +164,33 @@ def image_callback(msg):
 			elif avgL<avgR:
 				print("R")
 				turn = (1-0.7)*turn + 2*(1.14/2)*avgR
-		elif avgS>0.1 and avgS<0.8:
-			linear = 0
-			if avgL>avgR:
-				print("L")
-				turn = -3.14/2
-			elif avgL<avgR:
-				print("R")
-				turn = 3.14/2
-		elif avgS<0.1:
-			print("B")
-			linear = -0.05
-			if avgL>avgR:
-				print("L")
-				turn = -1.14/2
-			elif avgL<avgR:
-				print("R")
-				turn = 1.14/2
+			maxturn="False"
+
+		else:
+			if maxturn=="False":
+				linear = 0
+				if avgL>avgR:
+					print("L")
+					turn = -3.14/5
+					maxturn="True"
+				elif avgL<avgR:
+					print("R")
+					turn = 3.14/5
+					maxturn="True"
+			elif maxturn=="True":
+				turn=turn
+
+		#elif avgS<0.1:
+		#	print("B")
+		#	linear = -0.05
+		#	if avgL>avgR:
+		#		print("L")
+		#		turn = -1.14/2
+		#	elif avgL<avgR:
+		#		print("R")
+		#		turn = 1.14/2
+
+################################################################
 		#if avgS>0.4:
 		#	linear = (1-0.7)*linear + 0.7*(1-avgS)*0.4
 		#	if avgL>avgR and avgL>0.4:
