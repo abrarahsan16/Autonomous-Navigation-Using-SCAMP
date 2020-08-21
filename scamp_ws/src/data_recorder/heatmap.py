@@ -25,7 +25,7 @@ experiment = glob.glob(folder + "/*")
 outputFolder = "/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/data_recorder/Heatmap/"
 
 model = SCAMP_CNNmodel.CNN(256,256,1,3)
-model.load_weights('test.h5') #change according to need
+model.load_weights('my_model_weights.h5') #change according to need
 graph = tf.get_default_graph()
 print("weight loaded")
 
@@ -34,8 +34,8 @@ for exp in experiment:
     outp = outputFolder
     print(exp)
     images = [os.path.basename(x) for x in glob.glob(exp + "/img/*.jpeg")]
-    mapmodel = Model(inputs=model.inputs, outputs=model.layers[11].output)
-    mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[7].output)
+    mapmodel = Model(inputs=model.inputs, outputs=model.layers[7].output)
+    mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[2].output)
     layer_idx=utils.find_layer_idx(mapmodel, 'activation_1')
     #layer_idx=utils.find_layer_idx(mapmodel, 'max_pooling2d_2')
     mapmodel.layers[layer_idx].activation = keras.activations.linear
@@ -79,7 +79,7 @@ for exp in experiment:
         y_pred=model2.predict(out)
         class_idxs_sorted =np.argsort(y_pred.flatten())[::-1]
         test=np.argsort(y_pred.flatten())
-        penultimate_layer_idx = utils.find_layer_idx(model2, "max_pooling2d_4")
+        penultimate_layer_idx = utils.find_layer_idx(model2, "max_pooling2d_2")
         class_idx=class_idxs_sorted[0]
         seed_input=out
         grad_top1= visualize_cam(model2, layer_idx,[0],seed_input,

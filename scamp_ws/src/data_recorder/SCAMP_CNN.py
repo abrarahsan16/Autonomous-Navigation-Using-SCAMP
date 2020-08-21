@@ -65,7 +65,7 @@ class myCallback(tf.keras.callbacks.Callback):
         self.val_losses.append(logs.get('val_loss'))
         self.val_acc.append(logs.get('val_acc'))
         self.i+= 1
-
+	model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me
         # Before plotting ensure at least 2 epochs have passed
         if len(self.losses) > 1:
 
@@ -99,5 +99,5 @@ class myCallback(tf.keras.callbacks.Callback):
 callbacks = myCallback()
 
 tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
-history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=5, verbose=1,callbacks = [callbacks],workers=5)
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=10, verbose=1,callbacks = [callbacks],workers=5)
 #history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)

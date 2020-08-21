@@ -21,12 +21,18 @@ def CNN(img_width, img_height, img_channels, output_dim):
 	model.add(MaxPooling2D(pool_size=(2,2)))
 
 
-	model.add(Conv2D(3,(3,3),activation="relu"))
-	model.add(MaxPooling2D(pool_size=(2,2)))
+	#model.add(Conv2D(3,(3,3),activation="relu"))
+	#model.add(MaxPooling2D(pool_size=(2,2)))
 
 
-	model.add(Conv2D(3,(3,3),activation="relu"))
-	model.add(MaxPooling2D(pool_size=(2,2)))
+	#model.add(Conv2D(3,(3,3),activation="relu"))
+	#model.add(MaxPooling2D(pool_size=(2,2)))
+	
+	#model.add(Conv2D(3,(3,3),activation="relu"))
+	#model.add(MaxPooling2D(pool_size=(2,2)))
+
+	#model.add(Conv2D(3,(3,3),activation="relu"))
+	#model.add(MaxPooling2D(pool_size=(2,2)))
 
 
 	model.add(Flatten())
@@ -36,5 +42,5 @@ def CNN(img_width, img_height, img_channels, output_dim):
 
 
 	print(model.summary())
-	
+
 	return model

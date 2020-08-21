@@ -162,11 +162,11 @@ class DirectoryIterator(Iterator):
             #x = cv2.resize(x,(int(x.shape[1] * 0.5), int(x.shape[0]*0.5)))
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
-            #center_width = int(x.shape[1]/2)
-            #center_height = int(420)
+            center_width = int(x.shape[1]/2)
+            center_height = int(420)
 
-            #x = x[center_height - int(self.crop_size[0]):center_height, center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
-            x = cv2.resize(x, dsize=(256, 256)) # needs center crop
+            x = x[center_height - int(self.crop_size[0]):center_height, center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
+            #x = cv2.resize(x, dsize=(256, 256)) # needs center crop
 
             #x = self.image_data_generator.random_transform(x)
             #x = self.image_data_generator.standardize(x)

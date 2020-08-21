@@ -131,11 +131,11 @@ def image_callback(msg):
 	l2.append(result[1])
 	l3.append(result[2])
 	count = count+1
-	if count==7:
+	if count==3:
 
-		avgL=sum(l1)/7
-		avgS=sum(l2)/7
-		avgR=sum(l3)/7
+		avgL=sum(l1)/3
+		avgS=sum(l2)/3
+		avgR=sum(l3)/3
 
 
 		#avgL = st.median(l1)
@@ -147,23 +147,33 @@ def image_callback(msg):
 
 		print("LinearV: {} AngularV: {}".format(linear, turn))
 
-		if avgS<0.95:
-			linear = (1-0.7)*linear + 0.7*(1-avgS)*0.3
+		if avgS>0.80:
+			#linear = (1-0.7)*linear + 0.7*(1-avgS)*0.3
+			linear = 0.2
 			#turn = 0
 			if avgL>avgR:
 				print("L")
-				turn = (1-0.7)*turn + 0.7*(-0.4)*avgL
+				turn = (1-0.7)*turn + 2*(-1.14/2)*avgL
 			elif avgL<avgR:
 				print("R")
-				turn = (1-0.7)*turn + 0.7*(0.4)*avgR
-		else:
+				turn = (1-0.7)*turn + 2*(1.14/2)*avgR
+		elif avgS>0.1 and avgS<0.8:
 			linear = 0
 			if avgL>avgR:
 				print("L")
-				turn = 0.2
+				turn = -3.14/2
 			elif avgL<avgR:
 				print("R")
-				turn = -0.2
+				turn = 3.14/2
+		elif avgS<0.1:
+			print("B")
+			linear = -0.05
+			if avgL>avgR:
+				print("L")
+				turn = -1.14/2
+			elif avgL<avgR:
+				print("R")
+				turn = 1.14/2
 		#if avgS>0.4:
 		#	linear = (1-0.7)*linear + 0.7*(1-avgS)*0.4
 		#	if avgL>avgR and avgL>0.4:
