@@ -9,13 +9,13 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 from keras import optimizers
 
-import utils2 as utils
+import utils3 as utils
 import SCAMP_CNNmodel
 
 img_width=480
 img_height=640
 img_channels=1
-output_dim=3
+output_dim=4
 b_size = 3
 crop_width = 256
 crop_height = 256
@@ -35,10 +35,10 @@ val_generator = train_datagen.flow_from_directory("/home/abrarahsan16/SCAMP/Auto
         shuffle=True, color_mode='grayscale', target_size=(480,256), crop_size=(crop_height,crop_width), batch_size=b_size)
 #xTrain, xTest, yTrain, yTest = train_test_split(train_generator, test_size=0.4, random_state=0)
 
-opt = optimizers.Adam(lr=0.00001)
+opt = optimizers.Adam(lr=0.0001)
 
 #model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
-model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 print("Training..................................................................")
 
 
@@ -65,7 +65,7 @@ class myCallback(tf.keras.callbacks.Callback):
         self.val_losses.append(logs.get('val_loss'))
         self.val_acc.append(logs.get('val_acc'))
         self.i+= 1
-	model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me
+	#model.save_weights('my_model_weights.h5',overwrite=True) # I didn't define path, so it should be stored in default path. For me
         # Before plotting ensure at least 2 epochs have passed
         if len(self.losses) > 1:
 
@@ -79,7 +79,7 @@ class myCallback(tf.keras.callbacks.Callback):
             #plt.figure()
             plt.show(block=False)
             plt.plot(N, self.losses, label = "train_loss")
-            
+
             plt.plot(N, self.acc, label = "train_acc")
             plt.plot(N, self.val_losses, label = "val_loss")
             plt.plot(N, self.val_acc, label = "val_acc")
