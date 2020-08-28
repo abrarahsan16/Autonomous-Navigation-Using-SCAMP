@@ -155,12 +155,14 @@ class DirectoryIterator(Iterator):
             #    batch_steer[i,0:2] = (0,1,0)
 
             #print(batch_steer)
+	    center_height = 380
+	    center_width = 320
 
             x = cv2.imread(os.path.join(self.directory,fname))
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
-            #x = x[center_height - int(self.crop_size[0]):center_height, center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
-            x = cv2.resize(x, dsize=(256, 256)) # needs center crop
+            x = x[center_height - int(self.crop_size[0]):center_height, 0:256]
+            #x = cv2.resize(x, dsize=(256, 256)) # needs center crop
 
             x = np.asarray(x, dtype=np.int32)
             x = x.reshape((x.shape[0],x.shape[1],1))

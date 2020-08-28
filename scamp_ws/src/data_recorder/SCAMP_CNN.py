@@ -35,10 +35,10 @@ val_generator = train_datagen.flow_from_directory("/home/abrarahsan16/SCAMP/Auto
         shuffle=True, color_mode='grayscale', target_size=(480,256), crop_size=(crop_height,crop_width), batch_size=b_size)
 #xTrain, xTest, yTrain, yTest = train_test_split(train_generator, test_size=0.4, random_state=0)
 
-opt = optimizers.Adam(lr=0.0001)
+opt = optimizers.Adam(lr=0.00001)
 
 #model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
-model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
 print("Training..................................................................")
 
 
@@ -99,5 +99,5 @@ class myCallback(tf.keras.callbacks.Callback):
 callbacks = myCallback()
 
 tf.keras.utils.plot_model(model, to_file="model.png",show_layer_names=True,show_shapes=True,rankdir="TB")
-history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=10, verbose=1,callbacks = [callbacks],workers=5)
+history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size), validation_data=val_generator,validation_steps=int(val_generator.samples/b_size),max_queue_size=10, epochs=5, verbose=1,callbacks = [callbacks],workers=5)
 #history=model.fit_generator(train_generator,steps_per_epoch=int(train_generator.samples/b_size),max_queue_size=10, epochs=20, verbose=1,callbacks = [callbacks],workers=5)

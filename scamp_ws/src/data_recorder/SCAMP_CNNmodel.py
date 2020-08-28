@@ -7,13 +7,14 @@ import keras
 
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D, BatchNormalization
 
 
 def CNN(img_width, img_height, img_channels, output_dim):
 
 	model=Sequential()
 	model.add(Conv2D(3,(3,3),activation="relu",input_shape=(img_width,img_height,img_channels)))
+	model.add(BatchNormalization())
 	model.add(Conv2D(3,(3,3),activation="relu"))
 	model.add(MaxPooling2D(pool_size=(2,2)))
 

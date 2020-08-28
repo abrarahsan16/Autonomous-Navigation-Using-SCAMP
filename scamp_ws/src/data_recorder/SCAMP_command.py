@@ -31,12 +31,13 @@ maxturn=""
 l1=[]
 l2=[]
 l3=[]
+l4=[]
 
 
 import SCAMP_CNNmodel
 
 
-model=SCAMP_CNNmodel.CNN(256,256,1,3)
+model=SCAMP_CNNmodel.CNN(256,256,1,4)
 model.load_weights('123.h5') #change according to need
 graph = tf.get_default_graph()
 print("weight loaded")
@@ -55,13 +56,14 @@ def image_callback(msg):
 	global l1
 	global l2
 	global l3
+	global l4
 	global count,maxturn
 
 	cv2_img = bridge.imgmsg_to_cv2(msg,"bgr8")
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
 	#cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
 	center_width = int(cv2_gray.shape[1]/2)
-	center_height = int(420)
+	center_height = int(380)
 	cv2_res = cv2_gray[center_height - int(256):center_height,
 						center_width - int(256/2):center_width + int(256/2)]
 
@@ -136,12 +138,14 @@ def image_callback(msg):
 	l1.append(result[0])
 	l2.append(result[1])
 	l3.append(result[2])
+	l4.append(result[3])
 	count = count+1
-	if count==7:
+	if count==3:
 
-		avgL=sum(l1)/7
-		avgS=sum(l2)/7
-		avgR=sum(l3)/7
+		avgL=sum(l1)/3
+		avgS=sum(l2)/3
+		avgR=sum(l3)/3
+		avgB=sum(l4)/3
 
 
 		#avgL = st.median(l1)
@@ -153,32 +157,33 @@ def image_callback(msg):
 		# label is wall, not turn
 
 		print("LinearV: {} AngularV: {}".format(linear, turn))
-
-		if avgS>0.80:
-			#linear = (1-0.7)*linear + 0.7*(1-avgS)*0.3
-			linear = 0.2
+		linear = (1-0.7)*linear + 0.7*(avgS-avgB)
+		turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.5
+#		if avgS>0.80:
+#			#linear = (1-0.7)*linear + 0.7*(1-avgS)*0.3
+#			linear = 0.2
 			#turn = 0
-			if avgL>avgR:
-				print("L")
-				turn = (1-0.7)*turn + 2*(-1.14/2)*avgL
-			elif avgL<avgR:
-				print("R")
-				turn = (1-0.7)*turn + 2*(1.14/2)*avgR
-			maxturn="False"
+#			if avgL>avgR:
+#				print("L")
+#				turn = (1-0.7)*turn + 2*(-1.14/2)*avgL
+#			elif avgL<avgR:
+#				print("R")
+#				turn = (1-0.7)*turn + 2*(1.14/2)*avgR
+#			maxturn="False"
 
-		else:
-			if maxturn=="False":
-				linear = 0
-				if avgL>avgR:
-					print("L")
-					turn = -3.14/5
-					maxturn="True"
-				elif avgL<avgR:
-					print("R")
-					turn = 3.14/5
-					maxturn="True"
-			elif maxturn=="True":
-				turn=turn
+#		else:
+#			if maxturn=="False":
+#				linear = 0
+#				if avgL>avgR:
+#					print("L")
+#					turn = -3.14/5
+#					maxturn="True"
+#				elif avgL<avgR:
+#					print("R")
+#					turn = 3.14/5
+#					maxturn="True"
+#			elif maxturn=="True":
+#				turn=turn
 
 		#elif avgS<0.1:
 		#	print("B")
@@ -246,7 +251,7 @@ def image_callback(msg):
 		#print("AvgL: "+str(avgL))
 		#print("AvgS: "+str(avgS))
 		#print("AvgR: "+str(avgR))
-		print("AvgL: {} AvgS: {} AvgR: {}".format(avgL, avgS, avgR))
+		print("AvgL: {} AvgS: {} AvgR: {}, avgB: {}".format(avgL, avgS, avgR, avgB))
 		print("====================")
 		mov = movement()
 		mov.move_command()
@@ -255,6 +260,7 @@ def image_callback(msg):
 		l1=[]
 		l2=[]
 		l3=[]
+		l4=[]
 #===========================================================================================
 
 #	index=np.argmax(result, axis=0)
