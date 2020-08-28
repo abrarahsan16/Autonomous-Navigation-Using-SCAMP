@@ -26,7 +26,7 @@ def CNN(img_width, img_height, img_channels, output_dim):
 	x1 = Activation('relu')(x1)
 	x1 = MaxPooling2D(pool_size=(3, 3), strides=[2,2])(x1)
 
-	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(img_input)
+	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
 	x1 = Activation('relu')(x1)
 	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
 	x1 = Activation('relu')(x1)
@@ -45,10 +45,10 @@ def CNN(img_width, img_height, img_channels, output_dim):
 	model = Model(inputs=[img_input], outputs=[steer, coll])
 	print(model.summary())
 	return model
-	
-	
-	
-	
+
+
+
+
 	#model=Sequential()
 	#model.add(Conv2D(3,(3,3),activation="relu",input_shape=(img_width,img_height,img_channels)))
 	#model.add(Conv2D(3,(3,3),activation="relu"))

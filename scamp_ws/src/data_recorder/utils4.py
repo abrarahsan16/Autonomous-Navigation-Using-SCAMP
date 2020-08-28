@@ -133,14 +133,9 @@ class DirectoryIterator(Iterator):
 
         # Image transformation is not under thread lock, so it can be done in
         # parallel
-        batch_x = np.zeros((current_batch_size,) + self.image_shape,
-                dtype=K.floatx())
-        batch_steer = np.zeros((current_batch_size, 2,),
-                dtype=K.floatx())
-
-	batch_coll = np.zeros((current_batch_size, 2,),
-                dtype=K.floatx())
-									#new
+        batch_x = np.zeros((current_batch_size,) + self.image_shape,dtype=K.floatx())
+        batch_steer = np.zeros((current_batch_size, 2,),dtype=K.floatx())
+        batch_coll = np.zeros((current_batch_size, 2,),dtype=K.floatx())
 
         grayscale = self.color_mode == 'grayscale'
 
@@ -162,13 +157,13 @@ class DirectoryIterator(Iterator):
 
             x = cv2.imread(os.path.join(self.directory,fname))
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-	    
-            center_width = int(x.shape[1]/2)
-	    center_height = int(450)
+
+            #center_width = int(x.shape[1]/2)
+	    #center_height = int(450)
 
 
-            x = x[center_height - int(self.crop_size[0]):center_height, center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
-            #x = cv2.resize(x, dsize=(256, 256)) # needs center crop
+            #x = x[center_height - int(self.crop_size[0]):center_height, center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
+            x = cv2.resize(x, dsize=(256, 256)) # needs center crop
 
             x = np.asarray(x, dtype=np.int32)
             x = x.reshape((x.shape[0],x.shape[1],1))
@@ -177,28 +172,27 @@ class DirectoryIterator(Iterator):
             cv2.destroyAllWindows()
 
             # Build batch of steering and collision data
-            if self.exp_type[index_array[i]] == 1:
+            #if self.exp_type[index_array[i]] == 1:
                 #print(self.ground_truth[index_array[i]])
                 # Steering experiment (t=1)
                 #batch_steer[i,0:2] = self.ground_truth[index_array[i],0:2]
-                if labelName.startswith("L"):
-                    batch_steer[i,0] = 1
-                    batch_steer[i,1] = 0
-                    
-                elif labelName.startswith("R"):
-
-                    batch_steer[i,0] = 0
-                    batch_steer[i,1] = 1
-                  
-		if labelName[1]=="S":
-
-		    batch_coll[i,0]=1
-		    batch_coll[i,1]=0
-
-		elif labelName[1]=="B":
-
-		    batch_coll[i,0]=0
-		    batch_coll[i,1]=1
+            if labelName.startswith("L"):
+                batch_steer[i,0] = 1
+                batch_steer[i,1] = 0
+                batch_coll[i] = np.array(1,0)
+            elif labelName.startswith("R"):
+                batch_steer[i,0] = 0
+                batch_steer[i,1] = 1
+                batch_coll[i] = np.array(1,0)
+            #elif self.exp_type[index_array[i]] == 0:
+            if labelName.startswith("S"):
+                batch_coll[i,0] = 1
+                batch_coll[i,1] = 0
+                batch_steer[i] = np.array(1,1)
+            elif labelName.startswith("B"):
+                batch_coll[i,0] = 0
+                batch_coll[i,1] = 1
+                batch_steer[i] = np.array(0,0)
 
 		#name as LS LB, RS,RB
 
