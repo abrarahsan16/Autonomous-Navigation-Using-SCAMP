@@ -9,13 +9,13 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 from keras import optimizers
 
-import utils3 as utils
+import utils4 as utils
 import SCAMP_CNNmodel
 
 img_width=480
 img_height=640
 img_channels=1
-output_dim=4
+output_dim=2
 b_size = 3
 crop_width = 256
 crop_height = 256
