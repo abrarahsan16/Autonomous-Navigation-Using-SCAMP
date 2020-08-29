@@ -190,8 +190,8 @@ class DirectoryIterator(Iterator):
             if labelName.startswith("S"):
                 batch_coll[i,0] = 1
                 batch_coll[i,1] = 0
-                batch_steer[i,0] = 0
-                batch_steer[i,1] = 0
+                batch_steer[i,0] = 1
+                batch_steer[i,1] = 1
             elif labelName.startswith("B"):
                 batch_coll[i,0] = 0
                 batch_coll[i,1] = 1
