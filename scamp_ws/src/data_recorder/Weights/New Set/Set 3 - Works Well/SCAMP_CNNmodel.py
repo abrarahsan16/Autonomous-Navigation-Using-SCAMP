@@ -35,7 +35,7 @@ def CNN(img_width, img_height, img_channels, output_dim):
 
 
 	x = Flatten()(x1)
-	#x = Dense(200)(x)
+	x = Dense(200)(x)
 	steer=Dense(output_dim)(x)
 	steer=Activation('softmax')(steer)
 

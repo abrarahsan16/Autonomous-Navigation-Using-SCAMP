@@ -179,20 +179,24 @@ class DirectoryIterator(Iterator):
             if labelName.startswith("L"):
                 batch_steer[i,0] = 1
                 batch_steer[i,1] = 0
-                batch_coll[i] = np.array(1,0)
+                batch_coll[i,0] = 1
+                batch_coll[i,1] = 0
             elif labelName.startswith("R"):
                 batch_steer[i,0] = 0
                 batch_steer[i,1] = 1
-                batch_coll[i] = np.array(1,0)
+                batch_coll[i,0] = 1
+                batch_coll[i,1] = 0
             #elif self.exp_type[index_array[i]] == 0:
             if labelName.startswith("S"):
                 batch_coll[i,0] = 1
                 batch_coll[i,1] = 0
-                batch_steer[i] = np.array(1,1)
+                batch_steer[i,0] = 0
+                batch_steer[i,1] = 0
             elif labelName.startswith("B"):
                 batch_coll[i,0] = 0
                 batch_coll[i,1] = 1
-                batch_steer[i] = np.array(0,0)
+                batch_steer[i,0] = 0
+                batch_steer[i,1] = 0
 
 		#name as LS LB, RS,RB
 
