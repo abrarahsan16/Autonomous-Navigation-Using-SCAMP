@@ -38,10 +38,10 @@ def CNN(img_width, img_height, img_channels, output_dim):
 	#x = Dense(200)(x)
 	#x = Dropout(0.5)(x)
 	steer=Dense(output_dim)(x)
-	steer=Activation('sigmoid')(steer)
+	steer=Activation('softmax')(steer)
 
 	coll=Dense(output_dim)(x)
-	coll = Activation('sigmoid')(coll)
+	coll = Activation('softmax')(coll)
 
 	model = Model(inputs=[img_input], outputs=[steer, coll])
 	print(model.summary())

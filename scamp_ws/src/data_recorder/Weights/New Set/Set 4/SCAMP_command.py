@@ -61,10 +61,10 @@ def image_callback(msg):
 
 	cv2_img = bridge.imgmsg_to_cv2(msg,"bgr8")
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
-	cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
+	#cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
 	center_width = int(cv2_gray.shape[1]/2)
 	center_height = int(420)
-	#cv2_res = cv2_gray[center_height - int(256):center_height,
+	cv2_res = cv2_gray[center_height - int(256):center_height,
 						center_width - int(256/2):center_width + int(256/2)]
 
         np_img = np.asarray(cv2_res)
@@ -162,8 +162,8 @@ def image_callback(msg):
 		# label is wall, not turn
 
 		print("LinearV: {} AngularV: {}".format(linear, turn))
-		linear = (1-0.7)*linear + 0.7*(avgS-avgB)
-		turn = (1-0.7)*turn + 0.7*(avgR-avgL)*0.5
+		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.5
+		turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.5
 		if linear < 0:
 			linear = 0
 		
