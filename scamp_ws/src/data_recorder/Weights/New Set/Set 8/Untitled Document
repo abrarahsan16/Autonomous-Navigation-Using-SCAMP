@@ -1,0 +1,2 @@
+509s 21ms/step - loss: 0.6580 - activation_5_loss: 0.4620 - activation_6_loss: 0.1960 - activation_5_acc: 0.7087 - activation_6_acc: 0.9157 - val_loss: 0.8240 - val_activation_5_loss: 0.5150 - val_activation_6_loss: 0.3090 - val_activation_5_acc: 0.7004 - val_activation_6_acc: 0.8719
+
