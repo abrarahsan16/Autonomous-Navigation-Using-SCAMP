@@ -61,12 +61,16 @@ def image_callback(msg):
 
 	cv2_img = bridge.imgmsg_to_cv2(msg,"bgr8")
         cv2_gray = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2GRAY)
+	
+	#========== corridor =======(always work with resize+positive sign)
 	#cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
+	
+	#========== track ==========(always work with crop+ negative sign)
 	center_width = int(cv2_gray.shape[1]/2)
-	center_height = int(420)
+	center_height = int(460)
 	cv2_res = cv2_gray[center_height - int(256):center_height,
 						center_width - int(256/2):center_width + int(256/2)]
-
+	#===========================
         np_img = np.asarray(cv2_res)
 	np_img=np_img.reshape([1,256,256,1])
 
@@ -145,12 +149,12 @@ def image_callback(msg):
 	l3.append(turnsignal[1])
 	l4.append(straightsignal[1])
 	count = count+1
-	if count==2:
+	if count==4:
 
-		avgL=sum(l1)/2
-		avgS=sum(l2)/2
-		avgR=sum(l3)/2
-		avgB=sum(l4)/2
+		avgL=sum(l1)/4
+		avgS=sum(l2)/4
+		avgR=sum(l3)/4
+		avgB=sum(l4)/4
 
 
 		#avgL = st.median(l1)
@@ -162,8 +166,27 @@ def image_callback(msg):
 		# label is wall, not turn
 
 		print("LinearV: {} AngularV: {}".format(linear, turn))
-		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.5
-		turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.5
+		
+		#========== track ==========
+		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1.5
+		turn = (1-0.7)*turn + 0.7*(avgR-avgL)*-1.2
+		#========== corridor ==========
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.5
+		#turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.6
+		
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.7
+		#turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.8
+		
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.8
+		#turn = (1-0.4)*turn + 0.4*(avgR-avgL)*0.8
+		
+		#----------------------safe above----------------------------
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.8
+		#turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.9
+
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1
+		#turn = (1-0.4)*turn + 0.4*(avgR-avgL)*1.2
+		
 		if linear < 0:
 			linear = 0
 		
