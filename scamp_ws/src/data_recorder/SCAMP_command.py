@@ -68,6 +68,7 @@ def image_callback(msg):
 	#========== track ==========(always work with crop+ negative sign)
 	center_width = int(cv2_gray.shape[1]/2)
 	center_height = int(460)
+	#center_height = int(470)
 	cv2_res = cv2_gray[center_height - int(256):center_height,
 						center_width - int(256/2):center_width + int(256/2)]
 	#===========================
@@ -167,9 +168,28 @@ def image_callback(msg):
 
 		print("LinearV: {} AngularV: {}".format(linear, turn))
 		
+		#==========new weight======
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1
+		#turn = (1-0.3)*turn + 0.3*(avgR-avgL)*1
+	
+		
+
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.8
+		#turn = (1-0.4)*turn + 0.4*(avgR-avgL)*0.8
+		
+		#if linear<0.3:
+		#	linear=0
+		#	turn=0.4*(avgR-avgL)*-1.2
+
 		#========== track ==========
 		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1.5
 		turn = (1-0.7)*turn + 0.7*(avgR-avgL)*-1.2
+		
+		#========== circletrack ==========
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1
+		#turn = (1-0.7)*turn + 0.7*(avgR-avgL)*-1
+
+		
 		#========== corridor ==========
 		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.5
 		#turn = (1-0.3)*turn + 0.3*(avgR-avgL)*0.6
