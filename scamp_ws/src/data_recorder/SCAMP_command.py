@@ -185,6 +185,11 @@ def image_callback(msg):
 		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1.5
 		turn = (1-0.7)*turn + 0.7*(avgR-avgL)*-1.2
 		
+		#========== texture pentagon ==========
+		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*0.8
+		#turn = (1-0.7)*turn + 0.7*(avgR-avgL)*-1.5
+
+		
 		#========== circletrack ==========
 		#linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1
 		#turn = (1-0.7)*turn + 0.7*(avgR-avgL)*-1
