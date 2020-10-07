@@ -22,21 +22,20 @@ def CNN(img_width, img_height, img_channels, output_dim):
 
 	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(img_input)
 	x1 = Activation('relu')(x1)
-	#x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
-	#x1 = Activation('relu')(x1)
-	x1 = MaxPooling2D(pool_size=(2, 2), strides=[2,2])(x1)
+	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
+	x1 = Activation('relu')(x1)
+	x1 = MaxPooling2D(pool_size=(3, 3), strides=[2,2])(x1)
 
 	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
 	x1 = Activation('relu')(x1)
-	#x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
-	#x1 = Activation('relu')(x1)
-	x1 = MaxPooling2D(pool_size=(2, 2), strides=[2,2])(x1)
+	x1 = Conv2D(3, (3, 3), strides=[2,2], padding='same')(x1)
+	x1 = Activation('relu')(x1)
+	x1 = MaxPooling2D(pool_size=(3, 3), strides=[2,2])(x1)
 
 
 
 	x = Flatten()(x1)
-	x = Dense(100)(x)
-	#x = Dropout(0.5)(x)
+	x = Dense(200)(x)
 	steer=Dense(output_dim)(x)
 	steer=Activation('softmax')(steer)
 

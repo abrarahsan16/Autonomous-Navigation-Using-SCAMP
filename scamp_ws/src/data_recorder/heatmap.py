@@ -24,9 +24,7 @@ experiment = glob.glob(folder + "/*")
 
 outputFolder = "/home/abrarahsan16/SCAMP/Autonomous-Navigation-Using-SCAMP/scamp_ws/src/data_recorder/Heatmap/"
 
-#model = SCAMP_CNNmodel.CNN(256,256,1,4)
 model = SCAMP_CNNmodel.CNN(256,256,1,2)
-
 model.load_weights('my_model_weights.h5') #change according to need
 graph = tf.get_default_graph()
 print("weight loaded")
@@ -36,31 +34,21 @@ for exp in experiment:
     outp = outputFolder
     print(exp)
     images = [os.path.basename(x) for x in glob.glob(exp + "/img/*.png")]
-
-    ##==mapmodel = Model(inputs=model.inputs, outputs=model.layers[7].output)
-    mapmodel = Model(inputs=model.inputs, outputs=model.layers[15].output)
-
-    ##==mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[2].output)
-    mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[4].output)
-
-    ##==layer_idx=utils.find_layer_idx(mapmodel, 'activation_1')
-    layer_idx=utils.find_layer_idx(mapmodel, 'activation_5') 
-
+    mapmodel = Model(inputs=model.inputs, outputs=model.layers[16].output)
+    mapmodel2 = Model(inputs=model.inputs, outputs=model.layers[14].output)
+    layer_idx=utils.find_layer_idx(mapmodel, 'activation_6')
     #layer_idx=utils.find_layer_idx(mapmodel, 'max_pooling2d_2')
     mapmodel.layers[layer_idx].activation = keras.activations.linear
     model2= utils.apply_modifications(mapmodel)
-
-
-
     for im in images:
-        stamp = str(re.sub(r'\.png$','',im))
+        stamp = str(re.sub(r'\.jpeg$','',im))
         #out = resizer(exp + "/img/"+ im)
         im = exp + "/img/"+ im
         im = cv2.imread(im, cv2.IMREAD_GRAYSCALE)
         #cv2_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
         cv2_gray = im
         center_width = int(cv2_gray.shape[1]/2)
-    	center_height = int(460)
+    	center_height = int(380)
         cv2_res = cv2_gray[center_height - int(256):center_height,
     						center_width - int(256/2):center_width + int(256/2)]
         #cv2_res = cv2.resize(cv2_gray, dsize=(256, 256)) # needs center crop
@@ -69,20 +57,14 @@ for exp in experiment:
         #heatMap(im, stamp)
         #cv2.imwrite(os.path.join(outp,str(stamp)+".jpeg"), out)
 
-        result = model.predict(out) # result format: [[[PL,PR]],[[PS,PB]]]
-	
+        result = model.predict(out)
         #result = result.flatten()
-	
-	y=result[0][0][0]
-	yy=result[0][0][1]
+        print(result)
+        #y= result[0]
+        #yy=result[2]
+        #yyy=result[1]
+        #yyyy = result[3]
 
-	if result[0][0][0]>result[0][0][1]:
-		s="L"
-
-	elif result[0][0][0]<result[0][0][1]:
-		s = "R"
-	else:
-		s = "S"
         #if result[0]>result[2]:
         #    s = "R"
 
@@ -91,7 +73,7 @@ for exp in experiment:
 #
  #       else:
   #          s="S"
-	
+
 
 
         #mapmodel = Model(inputs=model.inputs, outputs=model.layers[3].output)
@@ -99,10 +81,7 @@ for exp in experiment:
         y_pred=model2.predict(out)
         class_idxs_sorted =np.argsort(y_pred.flatten())[::-1]
         test=np.argsort(y_pred.flatten())
-	
-        #penultimate_layer_idx = utils.find_layer_idx(model2, "max_pooling2d_2")
-	penultimate_layer_idx = utils.find_layer_idx(model2, "max_pooling2d_1")
-	
+        penultimate_layer_idx = utils.find_layer_idx(model2, "max_pooling2d_2")
         class_idx=class_idxs_sorted[0]
         seed_input=out
         grad_top1= visualize_cam(model2, layer_idx,[0],seed_input,
@@ -115,7 +94,7 @@ for exp in experiment:
 #        axes[1].imshow(fm[0,:,:,3], cmap='viridis')
  #       axes[1].set_title("Feature Map")
         axes[2].imshow(cv2_res, cmap="gray")
-        axes[2].set_title("Grad Cam: {}, {}, {}".format(s, y, yy))
+        #axes[2].set_title("Grad Cam:{}, {}, {}, {}".format(y, yyy, yy, yyyy))
         axes[2].imshow(grad_top1,cmap="jet",alpha=0.3)
         #fig.colorbar(i)
         addr = outputFolder + str(stamp)

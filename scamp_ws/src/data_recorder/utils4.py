@@ -44,7 +44,7 @@ class DirectoryIterator(Iterator):
     """
 
     def __init__(self, directory, image_data_generator, target_size=(480,256),
-            crop_size=(256,256), color_mode='grayscale',batch_size=3,
+            crop_size=(256,256), color_mode='grayscale',batch_size=32,
             shuffle=True,seed=None,follow_links=False):
 
         self.directory = directory
@@ -164,13 +164,9 @@ class DirectoryIterator(Iterator):
 
             #x = x[center_height - int(self.crop_size[0]):center_height, center_width - int(self.crop_size[1]/2):center_width + int(self.crop_size[1]/2)]
             x = cv2.resize(x, dsize=(256, 256)) # needs center crop
+
+            x = np.asarray(x, dtype=np.int32)
             x = x.reshape((x.shape[0],x.shape[1],1))
-
-            x = np.asarray(x, dtype=np.float32)
-
-            x = self.image_data_generator.standardize(x)
-
-
 
             batch_x[i] = x
             cv2.destroyAllWindows()
@@ -181,26 +177,26 @@ class DirectoryIterator(Iterator):
                 # Steering experiment (t=1)
                 #batch_steer[i,0:2] = self.ground_truth[index_array[i],0:2]
             if labelName.startswith("L"):
-                batch_steer[i,0] = 1.0
-                batch_steer[i,1] = 0.0
-                batch_coll[i,0] = 1.0
-                batch_coll[i,1] = 0.0
+                batch_steer[i,0] = 1
+                batch_steer[i,1] = 0
+                batch_coll[i,0] = 1
+                batch_coll[i,1] = 0
             elif labelName.startswith("R"):
-                batch_steer[i,0] = 0.0
-                batch_steer[i,1] = 1.0
-                batch_coll[i,0] = 1.0
-                batch_coll[i,1] = 0.0
+                batch_steer[i,0] = 0
+                batch_steer[i,1] = 1
+                batch_coll[i,0] = 1
+                batch_coll[i,1] = 0
             #elif self.exp_type[index_array[i]] == 0:
             if labelName.startswith("S"):
-                batch_coll[i,0] = 1.0
-                batch_coll[i,1] = 0.0
-                batch_steer[i,0] = 1.0
-                batch_steer[i,1] = 1.0
+                batch_coll[i,0] = 1
+                batch_coll[i,1] = 0
+                batch_steer[i,0] = 1
+                batch_steer[i,1] = 1
             elif labelName.startswith("B"):
-                batch_coll[i,0] = 0.0
-                batch_coll[i,1] = 1.0
-                batch_steer[i,0] = 0.0
-                batch_steer[i,1] = 0.0
+                batch_coll[i,0] = 0
+                batch_coll[i,1] = 1
+                batch_steer[i,0] = 0
+                batch_steer[i,1] = 0
 
 		#name as LS LB, RS,RB
 
