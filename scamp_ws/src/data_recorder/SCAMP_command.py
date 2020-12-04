@@ -113,7 +113,7 @@ def image_callback(msg):
 
 
 		#==========6kernels track ========== 
-		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1.5
+		linear = (1-0.7)*linear + 0.7*(avgS-avgB)*1 # 1 was 1.5 2x1x2 weight can't go more than 1
 		turn = (1-0.7)*turn + 0.7*(avgR-avgL)*1
 		
 		#========== texture pentagon ==========
