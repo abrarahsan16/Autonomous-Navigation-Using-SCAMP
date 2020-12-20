@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="sim_example" />
+		<Option pch_mode="2" />
+		<Option compiler="tdm_gcc_compiler" />
+		<Build>
+			<Target title="Debug">
+				<Option output="./sim_example" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="tdm_gcc_compiler" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add directory="../lib_debug" />
+					<Add directory="../Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="./sim_example" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="tdm_gcc_compiler" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../lib_debug" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-m32" />
+			<Add directory="../include" />
+		</Compiler>
+		<Linker>
+			<Add option="-m32" />
+			<Add library="scamp5_sim_lib" />
+			<Add library="uv" />
+			<Add library="ws2_32" />
+			<Add library="psapi" />
+			<Add library="iphlpapi" />
+			<Add library="userenv" />
+		</Linker>
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
