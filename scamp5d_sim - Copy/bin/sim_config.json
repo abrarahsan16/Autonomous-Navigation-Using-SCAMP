@@ -1,0 +1,14 @@
+{
+  "server_ip": "127.0.0.1",
+  "port_client": "27715",
+  "port_app": "27725",
+  "source_type": "image",
+  "source_path": "C:\\Users\\Owner\\Desktop\\testL4.png",
+  "hide_console": false,
+  "idle_mode": 0,
+  "palette": [
+    "../resources/sim_areg_default.BMP",
+    "../resources/sim_areg_saturation.BMP"
+  ],
+  "_comment": "source_type can be one of the following: webcam, video, image or frames. "
+}
