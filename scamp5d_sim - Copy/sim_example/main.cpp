@@ -61,50 +61,94 @@ int main(){
 			//MOV(R3,FLAG);
 			//all();
 	   
-	    get_image(A);                     // get image and reset PIX
+	        get_image(A);                     // get image and reset PIX
 
-		div(D, E, A);
-		diva(D, E, C);
-		diva(D, E, C);
-		mov2x(E, D, west, north);
-		mov2x(C, D, west, north);
-		movx(F, D, north);
-		neg(A, D);
-		sub(B, A, D);
-		add(C, E, C);
-		add2x(A, A, B, north, east);
-		subx(D, D, east, F);
-		addx(B, E, C, south);
-		add2x(E, E, F, south, south);
-		add(C, C, E, D);
-		add(A, C, A, B);
+        // First Conv layer
+        neg(B, A);
+        subx(C, A, south, B);
+        subx(D, A, north, B);
+        subx(B, B, west, A);
+        movx(A, B, east);
+        addx(C, C, D, east);
+        addx(A, B, A, north);
+        sub2x(B, A, south, south, A);
+        sub2x(A, C, west, west, C);
 
-/////////////////////////////////////
-		//mov(B, A);
-		//mov(C, A);
-/*
-	    mov(A, A, west);
-		diva(A, E, F);
-		diva(A, E, F);
-		mov(D, A, south);
-		mov(D, D, east);
-		mov(E, A, north);
-		mov(F, E);
-		add(E, E, F);
-		sub(A, A, E);
-		mov(E, D, west);
-		sub(A, A, E);
-		mov(E, D, north);
-		mov(E, E, north);
-		sub(D, D, E);
-		add(A, A, D);
-		mov(D, D, east);
-		mov(F, D);
-		add(D, D, F);
-		add(A, A, D);
-*/
+        scamp5_in(C, threshold);
+        scamp5_in(D, threshold);
+        //
+        // Second Conv layer Reg A
+        div(E, C, A);
+        diva(E, C, A);
+        div(C, A, D, E);
+        sub2x(A, C, east, south, C);
+        movx(D, E, east);
+        addx(C, C, E, east);
+        mov2x(E, E, west, north);
+        add(A, E, A);
+        sub2x(C, C, west, north, D);
+        mov2x(D, C, south, west);
+        add(A, A, C, D);
 
-		// lower case: Ainstruction Upper case£ºDinstruction
+        scamp5_in(C, threshold);
+        scamp5_in(D, threshold);
+        scamp5_in(E, threshold);
+
+        //
+        // Second Conv layer Reg B
+        div(E, D, B);
+        diva(E, D, C);
+        div(D, C, B, E);
+        neg(C, D);
+        sub2x(B, C, east, south, D);
+        sub(D, C, E);
+        mov2x(E, E, north, north);
+        add2x(E, C, E, east, east);
+        movx(C, C, west);
+        addx(B, C, B, north);
+        addx(C, C, B, south);
+        add2x(D, D, E, south, west);
+        add(B, D, B, C);
+
+        scamp5_in(C, threshold);
+        scamp5_in(D, threshold);
+        scamp5_in(E, threshold);
+
+        // Addtion of two comvoluted images
+        // NOTE!!: Here the sum of A and B is stored in D, to reduce num of "error"
+        bus(C,A,B); //C := -(A + B) + error
+        bus(D,C); //D := -C + error
+
+        scamp5_in(A, threshold);
+        scamp5_in(B, threshold);
+        //
+
+        // Third Conv layer
+        div(C, A, D);
+        div(A, B, E, C);
+        diva(A, B, E);
+        neg(B, A);
+        sub(E, B, C);
+        neg(C, A);
+        add2x(C, B, C, south, west);
+        addx(E, B, E, south);
+        addx(B, C, B, west);
+        subx(C, E, north, A);
+        add(E, B, E, A);
+        mov2x(A, A, west, north);
+        add2x(E, E, B, east, east);
+        add2x(B, B, A, east, east);
+        addx(E, E, B, west);
+        add(B, A, B);
+        addx(E, E, A, north);
+        addx(A, E, A, south);
+        mov2x(E, C, west, south);
+        addx(C, C, E, east);
+        mov2x(E, C, west, north);
+        add(B, B, C, E);
+
+
+		// lower case: Ainstruction Upper caseÂ£ÂºDinstruction
 		
 		// API and functions
 		// https://personalpages.manchester.ac.uk/staff/jianing.chen/scamp5d_lib_doc_html/scamp5__kernel__api__macro__analog_8hpp.html#a098bb4096dec2f54c4d1643b6a5873a2 
