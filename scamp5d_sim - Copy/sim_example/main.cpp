@@ -53,101 +53,150 @@ int main(){
     while(1){
 		vs_frame_loop_control();
 
-	//	scamp5_in(E, threshold);		// let E = threshold value
-       scamp5_kernel_begin();
-        //    get_image(C,D);
-			//sub(A, C, E);
-			//where(A);
-			//MOV(R3,FLAG);
-			//all();
-	   
-	        get_image(A);                     // get image and reset PIX
+		//scamp5_in(E, threshold);
+        scamp5_kernel_begin();
+            
 
-        // First Conv layer
-        neg(B, A);
-        subx(C, A, south, B);
-        subx(D, A, north, B);
-        subx(B, B, west, A);
-        movx(A, B, east);
-        addx(C, C, D, east);
-        addx(A, B, A, north);
-        sub2x(B, A, south, south, A);
-        sub2x(A, C, west, west, C);
+		get_image(A);
+		//scamp5_load_in(B, 0);
 
-        scamp5_in(C, threshold);
-        scamp5_in(D, threshold);
-        //
-        // Second Conv layer Reg A
-        div(E, C, A);
-        diva(E, C, A);
-        div(C, A, D, E);
-        sub2x(A, C, east, south, C);
-        movx(D, E, east);
-        addx(C, C, E, east);
-        mov2x(E, E, west, north);
-        add(A, E, A);
-        sub2x(C, C, west, north, D);
-        mov2x(D, C, south, west);
-        add(A, A, C, D);
-
-        scamp5_in(C, threshold);
-        scamp5_in(D, threshold);
-        scamp5_in(E, threshold);
-
-        //
-        // Second Conv layer Reg B
-        div(E, D, B);
-        diva(E, D, C);
-        div(D, C, B, E);
-        neg(C, D);
-        sub2x(B, C, east, south, D);
-        sub(D, C, E);
-        mov2x(E, E, north, north);
-        add2x(E, C, E, east, east);
-        movx(C, C, west);
-        addx(B, C, B, north);
-        addx(C, C, B, south);
-        add2x(D, D, E, south, west);
-        add(B, D, B, C);
-
-        scamp5_in(C, threshold);
-        scamp5_in(D, threshold);
-        scamp5_in(E, threshold);
-
-        // Addtion of two comvoluted images
-        // NOTE!!: Here the sum of A and B is stored in D, to reduce num of "error"
-        bus(C,A,B); //C := -(A + B) + error
-        bus(D,C); //D := -C + error
-
-        scamp5_in(A, threshold);
-        scamp5_in(B, threshold);
-        //
-
-        // Third Conv layer
-        div(C, A, D);
-        div(A, B, E, C);
-        diva(A, B, E);
-        neg(B, A);
-        sub(E, B, C);
-        neg(C, A);
-        add2x(C, B, C, south, west);
-        addx(E, B, E, south);
-        addx(B, C, B, west);
-        subx(C, E, north, A);
-        add(E, B, E, A);
-        mov2x(A, A, west, north);
-        add2x(E, E, B, east, east);
-        add2x(B, B, A, east, east);
-        addx(E, E, B, west);
-        add(B, A, B);
-        addx(E, E, A, north);
-        addx(A, E, A, south);
-        mov2x(E, C, west, south);
-        addx(C, C, E, east);
-        mov2x(E, C, west, north);
-        add(B, B, C, E);
+		bus(C);
+		bus(B, C, A);
+		bus(C, A);
+		where(A);
+		bus(B);
+		all();
+/*
+		bus(C);
+		bus(B, C, A);
+		bus(C, A);
+		where(A);
+		bus(B,C);
+		all();
+*/
 
 
+
+		//where(A);
+		  // MOV(R8, FLAG);
+
+		//scamp5_scan_events(R8, coordinates, 10);
+
+		
+
+
+
+//Convolutions
+/*
+		// First Conv layer
+		neg(B, A);
+		subx(C, A, south, B);
+		subx(D, A, north, B);
+		subx(B, B, west, A);
+		movx(A, B, east);
+		addx(C, C, D, east);
+		addx(A, B, A, north);
+		sub2x(B, A, south, south, A); // result stored
+		sub2x(A, C, west, west, C); // result stored
+
+		scamp5_load_in(C, 0); // set C and D to 0
+		scamp5_load_in(D, 0);
+		// E is not used when generating instrcutions though it's set to be available
+		
+		//
+		// Second Conv layer, Branch A
+		div(E, C, A);
+		diva(E, C, A);
+		div(C, A, D, E);
+		sub2x(A, C, east, south, C);
+		movx(D, E, east);
+		addx(C, C, E, east);
+		mov2x(E, E, west, north);
+		add(A, E, A);
+		sub2x(C, C, west, north, D);
+		mov2x(D, C, south, west);
+		add(A, A, C, D); // result stored
+
+		scamp5_load_in(C, 0);
+		scamp5_load_in(D, 0);
+		scamp5_load_in(E, 0);
+
+		//
+		// Second Conv layer, Branch B
+		div(E, D, B);
+		diva(E, D, C);
+		div(D, C, B, E);
+		neg(C, D);
+		sub2x(B, C, east, south, D);
+		sub(D, C, E);
+		mov2x(E, E, north, north);
+		add2x(E, C, E, east, east);
+		movx(C, C, west);
+		addx(B, C, B, north);
+		addx(C, C, B, south);
+		add2x(D, D, E, south, west);
+		add(B, D, B, C); // result stored
+
+		scamp5_load_in(C, 0);
+		scamp5_load_in(D, 0);
+		scamp5_load_in(E, 0);
+
+		// Addtion of two comvoluted images
+		// NOTE!!: Here the sum of A and B is stored in D, to reduce num of "error" appears
+		bus(C, A, B); //C := -(A + B) + error
+		bus(D, C); //D := -C + error
+
+		scamp5_load_in(A, 0);
+		scamp5_load_in(B, 0);
+		scamp5_load_in(C, 0);
+		//
+
+		// Third Conv layer
+		div(E, B, D);
+		diva(E, B, C);
+		diva(E, B, C);
+		neg(B, E);
+		diva(E, C, A);
+		mov2x(C, E, north, north);
+		mov2x(A, C, west, west);
+		sub(D, B, E);
+		addx(E, E, C, east);
+		add(C, B, D);
+		add(C, B, D, C);
+		movx(D, D, north);
+		addx(B, B, E, west);
+		mov2x(E, A, south, west);
+		mov2x(B, B, west, north);
+		add2x(B, E, B, south, west);
+		add2x(B, A, B, east, east);
+		addx(E, E, A, south);
+		addx(E, E, A, east);
+		movx(C, C, north);
+		add(C, D, C);
+		addx(E, E, A, east);
+		addx(E, E, A, east);
+		add(B, A, B);
+		add2x(B, B, A, east, south);
+		add2x(A, A, D, east, east);
+		add2x(A, A, D, west, west);
+		add2x(A, A, D, east, east);
+		add2x(A, A, D, west, south);
+		add(A, D, A);
+		add2x(D, D, C, east, south);
+		add(C, D, C);
+		mov2x(D, C, west, south);
+		add(E, A, E);
+		addx(A, E, A, south); // result stored
+		add(B, B, C, D); // result stored
+
+		// Here the results are stored in A and B again.
+
+*/
+
+
+	    
+	    
+/*
 		// lower case: Ainstruction Upper case£ºDinstruction
 		
 		// API and functions
@@ -168,6 +217,10 @@ int main(){
 		MOV(R10, FLAG);
 
 		all();      //FLAG := 1
+*/	    
+	    
+	    
+	    
         scamp5_kernel_end();
 
 
